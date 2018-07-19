@@ -1,3 +1,4 @@
+package fr.skytasul.guardian;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -16,7 +17,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * A whole class to create Guardian Beams by reflection </br>
+ * Inspired by the API <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a></br>
  * <b>1.9 -> 1.12</b>
+ * 
+ * @see <a href="https://github.com/SkytAsul/GuardianBeam">GutHub page</a>
  * @author SkytAsul
  */
 public class Laser {
