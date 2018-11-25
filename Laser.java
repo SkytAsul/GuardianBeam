@@ -18,7 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 /**
  * A whole class to create Guardian Beams by reflection </br>
  * Inspired by the API <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a></br>
- * <b>1.9 -> 1.12</b>
+ * <b>1.9 -> 1.13</b>
  * 
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GutHub page</a>
  * @author SkytAsul
@@ -43,7 +43,7 @@ public class Laser {
 	 * Create a Laser instance
 	 * @param start Location where laser will starts
 	 * @param end Location where laser will ends
-	 * @param duration Duration of laser (<i>-1 if infinite</i>)
+	 * @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
 	 * @param distance Distance where laser will be visible
 	 */
 	public Laser(Location start, Location end, int duration, int distance) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, InstantiationException{
@@ -133,6 +133,7 @@ public class Laser {
 		static int generateEID() {
 			return lastIssuedEID++;
 		}
+		private static int version = Integer.parseInt(Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3].substring(1).split("_")[1]);
 		private static String npack = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
 		private static String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
 		private static Object fakeSquid;
@@ -164,7 +165,7 @@ public class Laser {
 
 			setField(packet, "a", generateEID());
 			setField(packet, "b", UUID.randomUUID());
-			setField(packet, "c", 94);
+			setField(packet, "c", version < 13 ? 94 : 70);
 			setField(packet, "d", location.getX());
 			setField(packet, "e", location.getY());
 			setField(packet, "f", location.getZ());
@@ -172,7 +173,7 @@ public class Laser {
 			setField(packet, "k", (byte) (location.getPitch() * 256.0F / 360.0F));
 			Object nentity = fakeSquid.getClass().getDeclaredMethod("getHandle").invoke(fakeSquid);
 			Object watcher = Class.forName(npack + "Entity").getDeclaredMethod("getDataWatcher").invoke(nentity);
-			watcherSet.invoke(watcher, getField(Class.forName(npack + "Entity"), "Z", null), (byte) 32);
+			watcherSet.invoke(watcher, getField(Class.forName(npack + "Entity"), version < 12 ? "Z" : "ac", null), (byte) 32);
 			setField(packet, "m", watcher);
 
 			return packet;
@@ -183,7 +184,7 @@ public class Laser {
 
 			setField(packet, "a", generateEID());
 			setField(packet, "b", UUID.randomUUID());
-			setField(packet, "c", 68);
+			setField(packet, "c", version < 13 ? 68 : 28);
 			setField(packet, "d", location.getX());
 			setField(packet, "e", location.getY());
 			setField(packet, "f", location.getZ());
@@ -192,16 +193,16 @@ public class Laser {
 
 			Object nentity = fakeSquid.getClass().getDeclaredMethod("getHandle").invoke(fakeSquid);
 			Object watcher = Class.forName(npack + "Entity").getDeclaredMethod("getDataWatcher").invoke(nentity);
-			watcherSet.invoke(watcher, getField(Class.forName(npack + "Entity"), "Z", null), (byte) 32);
+			watcherSet.invoke(watcher, getField(Class.forName(npack + "Entity"), version < 12 ? "Z" : "ac", null), (byte) 32);
 			try{
-				watcherSet.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), "bA", null), false);
+				watcherSet.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), version < 12 ? "bA" : "bF", null), false);
 			}catch (InvocationTargetException ex){
-				watcherRegister.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), "bA", null), false);
+				watcherRegister.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), version < 12 ? "bA" : "bF", null), false);
 			}
 			try{
-				watcherSet.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), "bB", null), entityId);
+				watcherSet.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), version < 12 ? "bB" : "bG", null), entityId);
 			}catch (InvocationTargetException ex){
-				watcherRegister.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), "bB", null), entityId);
+				watcherRegister.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), version < 12 ? "bB" : "bG", null), entityId);
 			}
 
 			setField(packet, "m", watcher);
