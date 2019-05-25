@@ -1,3 +1,5 @@
+
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -158,7 +160,8 @@ public class Laser {
                     squidID = 73;
                     guardianID = 30;
                 }
-                Object[] entityConstructorParams = version < 14 ? new Object[]{null} : new Object[]{Class.forName(npack + "EntityTypes").getDeclaredField("SQUID").get(null), null};
+                Object world = Class.forName(cpack + "CraftWorld").getDeclaredMethod("getHandle").invoke(Bukkit.getWorlds().get(0));
+                Object[] entityConstructorParams = version < 14 ? new Object[]{world} : new Object[]{Class.forName(npack + "EntityTypes").getDeclaredField("SQUID").get(null), world};
                 fakeSquid = Class.forName(cpack + "entity.CraftSquid").getDeclaredConstructors()[0].newInstance(
                         null, Class.forName(npack + "EntitySquid").getDeclaredConstructors()[0].newInstance(
                                 entityConstructorParams));
