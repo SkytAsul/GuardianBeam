@@ -207,6 +207,7 @@ public class Laser {
             Object nentity = fakeSquid.getClass().getDeclaredMethod("getHandle").invoke(fakeSquid);
             Object watcher = Class.forName(npack + "Entity").getDeclaredMethod("getDataWatcher").invoke(nentity);
             watcherSet.invoke(watcher, getField(Class.forName(npack + "Entity"), watcherSet1, null), (byte) 32);
+            if (version > 13) setField(watcher, "registrationLocked", false);
             try{
                 watcherSet.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), watcherSet2, null), false);
             }catch (InvocationTargetException ex){
