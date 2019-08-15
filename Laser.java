@@ -141,6 +141,7 @@ public class Laser {
     private void sendStartPackets(Player p) throws ReflectiveOperationException{
         Packets.sendPacket(p, createSquidPacket);
         Packets.sendPacket(p, createGuardianPacket);
+        Packets.sendPacket(p, Packets.packetTeamCreate);
         Packets.sendPacket(p, teamAddPacket);
     }
 
