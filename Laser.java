@@ -190,9 +190,9 @@ public class Laser {
         private static Class<?> packetTeleport;
         private static Class<?> packetTeam;
 		private static Class<?> packetMetadata;
-        private static String watcherSet1;
-        private static String watcherSet2;
-        private static String watcherSet3;
+		private static Object watcherSet1;
+		private static Object watcherSet2;
+		private static Object watcherSet3;
         private static int squidID;
         private static int guardianID;
 
@@ -201,31 +201,35 @@ public class Laser {
 
         static{
             try {
+				String watcherName1 = null, watcherName2 = null, watcherName3 = null;
                 if (version < 13){
-                    watcherSet1 = "Z";
-                    watcherSet2 = "bA";
-                    watcherSet3 = "bB";
+					watcherName1 = "Z";
+					watcherName2 = "bA";
+					watcherName3 = "bB";
                     squidID = 94;
                     guardianID = 68;
                 }else if (version == 13){
-                    watcherSet1 = "ac";
-                    watcherSet2 = "bF";
-                    watcherSet3 = "bG";
+					watcherName1 = "ac";
+					watcherName2 = "bF";
+					watcherName3 = "bG";
                     squidID = 70;
                     guardianID = 28;
 				}else if (version == 14) {
-                    watcherSet1 = "W";
-                    watcherSet2 = "b";
-                    watcherSet3 = "bD";
+					watcherName1 = "W";
+					watcherName2 = "b";
+					watcherName3 = "bD";
                     squidID = 73;
                     guardianID = 30;
 				}else if (version > 14) {
-					watcherSet1 = "T";
-					watcherSet2 = "b";
-					watcherSet3 = "bA";
-					squidID = 73;
+					watcherName1 = "T";
+					watcherName2 = "b";
+					watcherName3 = "bA";
+					squidID = 74;
 					guardianID = 31;
-                }
+				}
+				watcherSet1 = getField(Class.forName(npack + "Entity"), watcherName1, null);
+				watcherSet2 = getField(Class.forName(npack + "EntityGuardian"), watcherName2, null);
+				watcherSet3 = getField(Class.forName(npack + "EntityGuardian"), watcherName3, null);
 
                 watcherConstructor = Class.forName(npack + "DataWatcher").getDeclaredConstructor(Class.forName(npack + "Entity"));
                 watcherSet = getMethod(Class.forName(npack + "DataWatcher"), "set");
@@ -247,11 +251,7 @@ public class Laser {
 						null, Class.forName(npack + "EntitySquid").getDeclaredConstructors()[0].newInstance(
 								entityConstructorParams)));
 				fakeSquidWatcher = createFakeDataWatcher();
-				try {
-					watcherSet.invoke(fakeSquidWatcher, getField(Class.forName(npack + "Entity"), watcherSet1, null), (byte) 32);
-				}catch (InvocationTargetException ex) {
-					watcherRegister.invoke(fakeSquidWatcher, getField(Class.forName(npack + "Entity"), watcherSet1, null), (byte) 32);
-				}
+				tryWatcherSet(fakeSquidWatcher, watcherSet1, (byte) 32);
             }catch (ReflectiveOperationException e) {
                 e.printStackTrace();
             }
@@ -264,7 +264,9 @@ public class Laser {
         }
         
         public static Object createFakeDataWatcher() throws ReflectiveOperationException{
-        	return watcherConstructor.newInstance(fakeSquid);
+			Object watcher = watcherConstructor.newInstance(fakeSquid);
+			if (version > 13) setField(watcher, "registrationLocked", false);
+			return watcher;
         }
         
 		public static Object createPacketSquidSpawn(Location location) throws ReflectiveOperationException {
@@ -291,18 +293,9 @@ public class Laser {
             setField(packet, "f", location.getZ());
             setField(packet, "j", (byte) (location.getYaw() * 256.0F / 360.0F));
             setField(packet, "k", (byte) (location.getPitch() * 256.0F / 360.0F));
-            watcherSet.invoke(watcher, getField(Class.forName(npack + "Entity"), watcherSet1, null), (byte) 32);
-            if (version > 13) setField(watcher, "registrationLocked", false);
-            try{
-                watcherSet.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), watcherSet2, null), false);
-            }catch (InvocationTargetException ex){
-                watcherRegister.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), watcherSet2, null), false);
-            }
-            try{
-                watcherSet.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), watcherSet3, null), squidId);
-            }catch (InvocationTargetException ex){
-                watcherRegister.invoke(watcher, getField(Class.forName(npack + "EntityGuardian"), watcherSet3, null), squidId);
-            }
+			tryWatcherSet(watcher, watcherSet1, (byte) 32);
+			tryWatcherSet(watcher, watcherSet2, false);
+			tryWatcherSet(watcher, watcherSet3, squidId);
 			if (version <= 14) setField(packet, "m", watcher);
             return packet;
         }
@@ -340,18 +333,29 @@ public class Laser {
 			return packet;
 		}
 		
+		private static void tryWatcherSet(Object watcher, Object watcherObject, Object watcherData) throws ReflectiveOperationException {
+			try {
+				watcherSet.invoke(watcher, watcherObject, watcherData);
+			}catch (InvocationTargetException ex) {
+				watcherRegister.invoke(watcher, watcherObject, watcherData);
+			}
+		}
+
+		/* Reflection utils */
         private static Method getMethod(Class<?> clazz, String name){
             for (Method m : clazz.getDeclaredMethods()){
                 if (m.getName().equals(name)) return m;
             }
             return null;
         }
+
         private static void setField(Object instance, String name, Object value) throws ReflectiveOperationException{
             Validate.notNull(instance);
             Field field = instance.getClass().getDeclaredField(name);
             field.setAccessible(true);
             field.set(instance, value);
         }
+
         private static Object getField(Class<?> clazz, String name, Object instance) throws ReflectiveOperationException{
             Field field = clazz.getDeclaredField(name);
             field.setAccessible(true);
