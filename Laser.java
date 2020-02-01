@@ -14,10 +14,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
 /**
  * A whole class to create Guardian Beams by reflection </br>
  * Inspired by the API <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a></br>
- * <b>1.9 -> 1.14</b>
+ * <b>1.9 -> 1.15</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub page</a>
  * @author SkytAsul
@@ -61,7 +62,8 @@ public class Laser {
         squid = (int) Packets.getField(Packets.packetSpawn, "a", createSquidPacket);
         squidUUID = (UUID) Packets.getField(Packets.packetSpawn, "b", createSquidPacket);
 		metadataPacketSquid = Packets.createPacketMetadata(squid, Packets.fakeSquidWatcher);
-        
+		Packets.setDirtyWatcher(Packets.fakeSquidWatcher);
+
 		fakeGuardianDataWatcher = Packets.createFakeDataWatcher();
 		createGuardianPacket = Packets.createPacketGuardianSpawn(start, fakeGuardianDataWatcher, squid);
         guardian = (int) Packets.getField(Packets.packetSpawn, "a", createGuardianPacket);
@@ -158,9 +160,9 @@ public class Laser {
     private void sendStartPackets(Player p) throws ReflectiveOperationException{
         Packets.sendPacket(p, createSquidPacket);
         Packets.sendPacket(p, createGuardianPacket);
-		if (Packets.version <= 14) {
-			Packets.sendPacket(p, metadataPacketGuardian);
+		if (Packets.version > 14) {
 			Packets.sendPacket(p, metadataPacketSquid);
+			Packets.sendPacket(p, metadataPacketGuardian);
 		}
         Packets.sendPacket(p, Packets.packetTeamCreate);
         Packets.sendPacket(p, teamAddPacket);
@@ -185,14 +187,15 @@ public class Laser {
         private static Constructor<?> watcherConstructor;
         private static Method watcherSet;
         private static Method watcherRegister;
+		private static Method watcherDirty;
         private static Class<?> packetSpawn;
         private static Class<?> packetRemove;
         private static Class<?> packetTeleport;
         private static Class<?> packetTeam;
 		private static Class<?> packetMetadata;
-		private static Object watcherSet1;
-		private static Object watcherSet2;
-		private static Object watcherSet3;
+		private static Object watcherObject1; // invisilibity
+		private static Object watcherObject2; // spikes
+		private static Object watcherObject3; // attack id
         private static int squidID;
         private static int guardianID;
 
@@ -227,13 +230,14 @@ public class Laser {
 					squidID = 74;
 					guardianID = 31;
 				}
-				watcherSet1 = getField(Class.forName(npack + "Entity"), watcherName1, null);
-				watcherSet2 = getField(Class.forName(npack + "EntityGuardian"), watcherName2, null);
-				watcherSet3 = getField(Class.forName(npack + "EntityGuardian"), watcherName3, null);
+				watcherObject1 = getField(Class.forName(npack + "Entity"), watcherName1, null);
+				watcherObject2 = getField(Class.forName(npack + "EntityGuardian"), watcherName2, null);
+				watcherObject3 = getField(Class.forName(npack + "EntityGuardian"), watcherName3, null);
 
                 watcherConstructor = Class.forName(npack + "DataWatcher").getDeclaredConstructor(Class.forName(npack + "Entity"));
                 watcherSet = getMethod(Class.forName(npack + "DataWatcher"), "set");
                 watcherRegister = getMethod(Class.forName(npack + "DataWatcher"), "register");
+				if (version >= 15) watcherDirty = getMethod(Class.forName(npack + "DataWatcher"), "markDirty");
                 packetSpawn = Class.forName(npack + "PacketPlayOutSpawnEntityLiving");
                 packetRemove = Class.forName(npack + "PacketPlayOutEntityDestroy");
                 packetTeleport = Class.forName(npack + "PacketPlayOutEntityTeleport");
@@ -251,7 +255,7 @@ public class Laser {
 						null, Class.forName(npack + "EntitySquid").getDeclaredConstructors()[0].newInstance(
 								entityConstructorParams)));
 				fakeSquidWatcher = createFakeDataWatcher();
-				tryWatcherSet(fakeSquidWatcher, watcherSet1, (byte) 32);
+				tryWatcherSet(fakeSquidWatcher, watcherObject1, (byte) 32);
             }catch (ReflectiveOperationException e) {
                 e.printStackTrace();
             }
@@ -269,6 +273,10 @@ public class Laser {
 			return watcher;
         }
         
+		public static void setDirtyWatcher(Object watcher) throws ReflectiveOperationException {
+			if (version >= 15) watcherDirty.invoke(watcher, watcherObject1);
+		}
+
 		public static Object createPacketSquidSpawn(Location location) throws ReflectiveOperationException {
             Object packet = packetSpawn.newInstance();
             setField(packet, "a", generateEID());
@@ -293,9 +301,9 @@ public class Laser {
             setField(packet, "f", location.getZ());
             setField(packet, "j", (byte) (location.getYaw() * 256.0F / 360.0F));
             setField(packet, "k", (byte) (location.getPitch() * 256.0F / 360.0F));
-			tryWatcherSet(watcher, watcherSet1, (byte) 32);
-			tryWatcherSet(watcher, watcherSet2, false);
-			tryWatcherSet(watcher, watcherSet3, squidId);
+			tryWatcherSet(watcher, watcherObject1, (byte) 32);
+			tryWatcherSet(watcher, watcherObject2, false);
+			tryWatcherSet(watcher, watcherObject3, squidId);
 			if (version <= 14) setField(packet, "m", watcher);
             return packet;
         }
@@ -329,8 +337,7 @@ public class Laser {
         }
         
 		private static Object createPacketMetadata(int entityId, Object watcher) throws ReflectiveOperationException {
-			Object packet = packetMetadata.getConstructor(int.class, watcher.getClass(), boolean.class).newInstance(entityId, watcher, false);
-			return packet;
+			return packetMetadata.getConstructor(int.class, watcher.getClass(), boolean.class).newInstance(entityId, watcher, false);
 		}
 		
 		private static void tryWatcherSet(Object watcher, Object watcherObject, Object watcherData) throws ReflectiveOperationException {
@@ -338,6 +345,7 @@ public class Laser {
 				watcherSet.invoke(watcher, watcherObject, watcherData);
 			}catch (InvocationTargetException ex) {
 				watcherRegister.invoke(watcher, watcherObject, watcherData);
+				if (version >= 15) watcherDirty.invoke(watcher, watcherObject);
 			}
 		}
 
@@ -361,5 +369,5 @@ public class Laser {
             field.setAccessible(true);
             return field.get(instance);
         }
-    }
+	}
 }
