@@ -70,7 +70,12 @@ public class LaserDemo extends JavaPlugin implements Listener{
 				}
 			}
 		}
-		p.getWorld().spawnParticle(Particle.SMOKE_LARGE, run.laser.end, 5);
+		p.getWorld().spawnParticle(Particle.SMOKE_LARGE, run.laser.getEnd(), 5);
+		try {
+			run.laser.callColorChange();
+		}catch (ReflectiveOperationException e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	@EventHandler

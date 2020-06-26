@@ -18,7 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 /**
  * A whole class to create Guardian Beams by reflection </br>
  * Inspired by the API <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a></br>
- * <b>1.9 -> 1.15</b>
+ * <b>1.9 -> 1.16</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub page</a>
  * @author SkytAsul
@@ -226,10 +226,16 @@ public class Laser {
 					watcherName3 = "bD";
 					squidID = 73;
 					guardianID = 30;
-				}else if (version > 14) {
+				}else if (version == 15) {
 					watcherName1 = "T";
 					watcherName2 = "b";
 					watcherName3 = "bA";
+					squidID = 74;
+					guardianID = 31;
+				}else if (version >= 16) {
+					watcherName1 = "T";
+					watcherName2 = "b";
+					watcherName3 = "d";
 					squidID = 74;
 					guardianID = 31;
 				}
