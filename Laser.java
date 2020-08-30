@@ -183,7 +183,9 @@ public class Laser {
 			return lastIssuedEID++;
 		}
 
-		private static int version = Integer.parseInt(Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3].substring(1).split("_")[1]);
+		private static String[] versions = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3].substring(1).split("_");
+		private static int version = Integer.parseInt(versions[1]); // 1.X
+		private static int versionMinor = Integer.parseInt(versions[2]); // 1.X.Y
 		private static String npack = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
 		private static String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
 		private static Object packetTeamCreate;
@@ -232,11 +234,17 @@ public class Laser {
 					watcherName3 = "bA";
 					squidID = 74;
 					guardianID = 31;
-				}else if (version >= 16) {
+				}else if (version == 16 && versionMinor < 2) {
 					watcherName1 = "T";
 					watcherName2 = "b";
 					watcherName3 = "d";
 					squidID = 74;
+					guardianID = 31;
+				}else {
+					watcherName1 = "S";
+					watcherName2 = "b";
+					watcherName3 = "d";
+					squidID = 81;
 					guardianID = 31;
 				}
 				watcherObject1 = getField(Class.forName(npack + "Entity"), watcherName1, null);
