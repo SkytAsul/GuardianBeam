@@ -1,7 +1,7 @@
 # GuardianBeam
-An util to create easily Guardians Lasers via Packets and Reflection. No ProtocolLib, compatible from Minecraft 1.9 to Minecraft 1.14!
+An util to create easily Guardians Lasers via Packets and Reflection. No ProtocolLib, compatible from Minecraft 1.9 to Minecraft 1.16!
 
-Inspired by the plugin GuardianBeamAPI by [Jaxon A Brown](https://www.spigotmc.org/resources/authors/merpg.33142/), who uses ProtocolLib (https://www.spigotmc.org/resources/guardianbeamapi.18329/)
+Inspired by the plugin GuardianBeamAPI by [Jaxon A Brown](https://www.spigotmc.org/resources/authors/merpg.33142/), which uses ProtocolLib (https://www.spigotmc.org/resources/guardianbeamapi.18329/)
 
 There is a [tutorial on SpigotMC](https://www.spigotmc.org/threads/tutorial-laser-guardian-beam.348901/)
 

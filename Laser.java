@@ -185,7 +185,7 @@ public class Laser {
 
 		private static String[] versions = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3].substring(1).split("_");
 		private static int version = Integer.parseInt(versions[1]); // 1.X
-		private static int versionMinor = Integer.parseInt(versions[2]); // 1.X.Y
+		private static int versionMinor = Integer.parseInt(versions[2].substring(1)); // 1.X.Y
 		private static String npack = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
 		private static String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
 		private static Object packetTeamCreate;
