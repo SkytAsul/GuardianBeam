@@ -24,6 +24,8 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author SkytAsul
  */
 public class Laser {
+	private static int teamID = 0;
+	
 	private final int duration;
 	private final int distanceSquared;
 	private Location start;
@@ -31,6 +33,7 @@ public class Laser {
 
 	private final Object createGuardianPacket;
 	private final Object createSquidPacket;
+	private final Object teamCreatePacket;
 	private final Object teamAddPacket;
 	private final Object destroyPacket;
 	private final Object metadataPacketGuardian;
@@ -70,6 +73,7 @@ public class Laser {
 		guardianUUID = (UUID) Packets.getField(Packets.packetSpawn, "b", createGuardianPacket);
 		metadataPacketGuardian = Packets.createPacketMetadata(guardian, fakeGuardianDataWatcher);
 
+		teamCreatePacket = Packets.createPacketTeamCreate("noclip-" + teamID++);
 		teamAddPacket = Packets.createPacketTeamAddEntities(squidUUID, guardianUUID);
 		destroyPacket = Packets.createPacketRemoveEntities(squid, guardian);
 	}
@@ -165,7 +169,7 @@ public class Laser {
 			Packets.sendPacket(p, metadataPacketSquid);
 			Packets.sendPacket(p, metadataPacketGuardian);
 		}
-		Packets.sendPacket(p, Packets.packetTeamCreate);
+		Packets.sendPacket(p, teamCreatePacket);
 		Packets.sendPacket(p, teamAddPacket);
 	}
 
@@ -188,7 +192,6 @@ public class Laser {
 		private static int versionMinor = Integer.parseInt(versions[2].substring(1)); // 1.X.Y
 		private static String npack = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + ".";
 		private static String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
-		private static Object packetTeamCreate;
 		private static Constructor<?> watcherConstructor;
 		private static Method watcherSet;
 		private static Method watcherRegister;
@@ -260,11 +263,6 @@ public class Laser {
 				packetTeleport = Class.forName(npack + "PacketPlayOutEntityTeleport");
 				packetTeam = Class.forName(npack + "PacketPlayOutScoreboardTeam");
 				packetMetadata = Class.forName(npack + "PacketPlayOutEntityMetadata");
-
-				packetTeamCreate = packetTeam.newInstance();
-				setField(packetTeamCreate, "a", "noclip");
-				setField(packetTeamCreate, "i", 0);
-				setField(packetTeamCreate, "f", "never");
 
 				Object world = Class.forName(cpack + "CraftWorld").getDeclaredMethod("getHandle").invoke(Bukkit.getWorlds().get(0));
 				Object[] entityConstructorParams = version < 14 ? new Object[] { world } : new Object[] { Class.forName(npack + "EntityTypes").getDeclaredField("SQUID").get(null), world };
@@ -340,6 +338,14 @@ public class Laser {
 			setField(packet, "e", (byte) (location.getYaw() * 256.0F / 360.0F));
 			setField(packet, "f", (byte) (location.getPitch() * 256.0F / 360.0F));
 			setField(packet, "g", true);
+			return packet;
+		}
+		
+		public static Object createPacketTeamCreate(String teamName) throws ReflectiveOperationException {
+			Object packet = packetTeam.newInstance();
+			setField(packet, "a", teamName);
+			setField(packet, "i", 0);
+			setField(packet, "f", "never");
 			return packet;
 		}
 

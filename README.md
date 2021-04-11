@@ -16,7 +16,7 @@ Then, it's extremely simple:
 2. Create a Laser instance: `new Laser(locationStart, locationEnd, duration, visibleDistance)` - duration is the time (in seconds) when laser will be visible (if you set it to -1, the laser will exists infinitely), and visibleDistance is the amount of blocks where your laser will be visible.
 3. After this, call the method `laser.start(plugin);` - where "plugin" parameter is the instance of your JavaPlugin class.
 4. TA-DAAAM ! Your laser is created and shown to near players !
-5. You can move the laser with the methods `laser.moveStart(newLocation);` and `laser.moveEnd(newLocation);
+5. You can move the laser with the methods `laser.moveStart(newLocation);` and `laser.moveEnd(newLocation);`
 6. To remove your laser before his end duration, just call `laser.stop();`
 
 ## Demo
