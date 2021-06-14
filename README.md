@@ -1,5 +1,5 @@
 # GuardianBeam
-An util to create easily Guardians Lasers via Packets and Reflection. No ProtocolLib, compatible from Minecraft 1.9 to Minecraft 1.16!
+An util to create easily Guardians Lasers via Packets and Reflection. No ProtocolLib, compatible from Minecraft 1.9 to Minecraft 1.17!
 
 Inspired by the plugin GuardianBeamAPI by [Jaxon A Brown](https://www.spigotmc.org/resources/authors/merpg.33142/), which uses ProtocolLib (https://www.spigotmc.org/resources/guardianbeamapi.18329/)
 
@@ -25,3 +25,17 @@ Here is something I quickly made to show what you can do with this API: a ray-gu
 ![Moving laser animation](https://github.com/SkytAsul/GuardianBeam/blob/master/Moving%20Beam.gif?raw=true)
 
 You can see the system in action [on this video](https://youtu.be/NSYMKsPBdMM), and the class is available [here](https://github.com/SkytAsul/GuardianBeam/blob/master/LaserDemo.java).
+
+## Advanced usage ~ animations
+The `Laser#moveStart(Location location, int ticks, Runnable callback` and `Laser#moveEnd(Location location, int ticks, Runnable callback)` methods can be used to make the laser move smoothly from one point to another.
+
+Quick preview of the smooth movement:
+
+![Smooth laser animation](https://github.com/SkytAsul/GuardianBeam/blob/master/Smooth%20Moving%20Beam.gif?raw=true)
+
+## Troubleshooting
+Sometimes, Guardian beams only renders as bubbles, the moving color part is invisible.
+It is not caused by this util but by a [Minecraft bug](https://bugs.mojang.com/browse/MC-165595).
+
+It happens when your world gets too old (when its game time value reaches 2800000).
+The only way to fix it is to open the `level.dat` file with a [NBT editor](https://github.com/jaquadro/NBTExplorer), and edit manually the `Data.Time` field to a lower value. Save the file, and start your server.
