@@ -4,8 +4,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
@@ -29,8 +31,9 @@ import org.bukkit.scheduler.BukkitTask;
 public class Laser {
 	private static int teamID = ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
 	
-	private final int duration;
 	private final int distanceSquared;
+	private int duration;
+	private boolean durationInTicks = false;
 	private Location start;
 	private Location end;
 
@@ -53,6 +56,8 @@ public class Laser {
 	private BukkitRunnable main;
 	private BukkitTask startMove, endMove;
 	private HashSet<Player> show = new HashSet<>();
+	
+	private List<Runnable> executeEnd = new ArrayList<>(1);
 
 	/**
 	 * Create a Laser instance
@@ -96,32 +101,45 @@ public class Laser {
 		teamCreatePacket = Packets.createPacketTeamCreate("noclip" + teamID++, squidUUID, guardianUUID);
 		destroyPackets = Packets.createPacketsRemoveEntities(squidID, guardianID);
 	}
+	
+	public Laser executeEnd(Runnable runnable) {
+		executeEnd.add(runnable);
+		return this;
+	}
 
+	public Laser durationInTicks() {
+		duration *= 20;
+		durationInTicks = true;
+		return this;
+	}
+	
 	public void start(Plugin plugin) {
 		this.plugin = plugin;
 		Validate.isTrue(main == null, "Task already started");
 		main = new BukkitRunnable() {
-			int time = duration;
+			int time = 0;
 
 			@Override
 			public void run() {
 				try {
-					if (time == 0) {
+					if (time == duration) {
 						cancel();
 						return;
 					}
-					for (Player p : start.getWorld().getPlayers()) {
-						if (isCloseEnough(p.getLocation())) {
-							if (!show.contains(p)) {
-								sendStartPackets(p);
-								show.add(p);
+					if (!durationInTicks || time % 20 == 0) {
+						for (Player p : start.getWorld().getPlayers()) {
+							if (isCloseEnough(p.getLocation())) {
+								if (!show.contains(p)) {
+									sendStartPackets(p);
+									show.add(p);
+								}
+							}else if (show.contains(p)) {
+								Packets.sendPackets(p, destroyPackets);
+								show.remove(p);
 							}
-						}else if (show.contains(p)) {
-							Packets.sendPackets(p, destroyPackets);
-							show.remove(p);
 						}
 					}
-					if (time != -1) time--;
+					time++;
 				}catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
@@ -134,13 +152,14 @@ public class Laser {
 					for (Player p : show) {
 						Packets.sendPackets(p, destroyPackets);
 					}
+					executeEnd.forEach(Runnable::run);
 				}catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 				main = null;
 			}
 		};
-		main.runTaskTimerAsynchronously(plugin, 0L, 20L);
+		main.runTaskTimerAsynchronously(plugin, 0L, durationInTicks ? 1L : 20L);
 	}
 
 	public void stop() {
