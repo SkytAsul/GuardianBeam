@@ -1,4 +1,4 @@
-
+package fr.skytasul.guardianbeam;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -108,7 +108,6 @@ public class Laser {
 	}
 
 	public Laser durationInTicks() {
-		duration *= 20;
 		durationInTicks = true;
 		return this;
 	}
@@ -148,6 +147,7 @@ public class Laser {
 			@Override
 			public synchronized void cancel() throws IllegalStateException {
 				super.cancel();
+				main = null;
 				try {
 					for (Player p : show) {
 						Packets.sendPackets(p, destroyPackets);
@@ -156,7 +156,6 @@ public class Laser {
 				}catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
-				main = null;
 			}
 		};
 		main.runTaskTimerAsynchronously(plugin, 0L, durationInTicks ? 1L : 20L);
