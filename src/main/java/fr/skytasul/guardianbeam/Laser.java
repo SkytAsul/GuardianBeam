@@ -265,9 +265,8 @@ public class Laser {
 			return lastIssuedEID++;
 		}
 
-		private static String[] versions = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3].substring(1).split("_");
-		private static int version = Integer.parseInt(versions[1]); // 1.X
-		private static int versionMinor = Integer.parseInt(versions[2].substring(1)); // 1.X.Y
+		private static int version;
+		private static int versionMinor;
 		private static String npack = "net.minecraft.server." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
 		private static String cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
 		
@@ -310,6 +309,13 @@ public class Laser {
 
 		static {
 			try {
+				String[] versions = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1).split("_");
+				version = Integer.parseInt(versions[1]); // 1.X
+				if (version >= 17) {
+					versions = Bukkit.getBukkitVersion().split("_")[0].split("\\.");
+					versionMinor = versions.length <= 2 ? 0 : Integer.parseInt(versions[2]);
+				}else versionMinor = Integer.parseInt(versions[2].substring(1)); // 1.X.Y
+				
 				String watcherName1 = null, watcherName2 = null, watcherName3 = null;
 				if (version < 13) {
 					watcherName1 = "Z";
@@ -473,13 +479,13 @@ public class Laser {
 
 		public static Object[] createPacketsRemoveEntities(int... entitiesId) throws ReflectiveOperationException {
 			Object[] packets;
-			if (version < 17) {
-				packets = new Object[] { packetRemove.newInstance(entitiesId) };
-			}else {
+			if (version == 17 && versionMinor == 0) {
 				packets = new Object[entitiesId.length];
 				for (int i = 0; i < entitiesId.length; i++) {
 					packets[i] = packetRemove.newInstance(entitiesId[i]);
 				}
+			}else {
+				packets = new Object[] { packetRemove.newInstance(entitiesId) };
 			}
 			return packets;
 		}
