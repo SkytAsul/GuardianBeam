@@ -23,7 +23,7 @@ import org.bukkit.scheduler.BukkitTask;
 /**
  * A whole class to create Guardian Beams by reflection </br>
  * Inspired by the API <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a></br>
- * <b>1.9 -> 1.17</b>
+ * <b>1.9 -> 1.17.1</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub page</a>
  * @author SkytAsul
