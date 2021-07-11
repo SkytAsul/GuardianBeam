@@ -309,12 +309,14 @@ public class Laser {
 
 		static {
 			try {
+				// e.g. Bukkit.getServer().getClass().getPackage().getName() -> org.bukkit.craftbukkit.v1_17_R1
 				String[] versions = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1).split("_");
 				version = Integer.parseInt(versions[1]); // 1.X
 				if (version >= 17) {
-					versions = Bukkit.getBukkitVersion().split("_")[0].split("\\.");
+					// e.g. Bukkit.getBukkitVersion() -> 1.17.1-R0.1-SNAPSHOT
+					versions = Bukkit.getBukkitVersion().split("-R")[0].split("\\.");
 					versionMinor = versions.length <= 2 ? 0 : Integer.parseInt(versions[2]);
-				}else versionMinor = Integer.parseInt(versions[2].substring(1)); // 1.X.Y
+				} else versionMinor = Integer.parseInt(versions[2].substring(1)); // 1.X.Y
 				
 				String watcherName1 = null, watcherName2 = null, watcherName3 = null;
 				if (version < 13) {
