@@ -309,10 +309,12 @@ public class Laser {
 
 		static {
 			try {
+				// e.g. Bukkit.getServer().getClass().getPackage().getName() -> org.bukkit.craftbukkit.v1_17_R1
 				String[] versions = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1).split("_");
 				version = Integer.parseInt(versions[1]); // 1.X
 				if (version >= 17) {
-					versions = Bukkit.getBukkitVersion().split("_")[0].split("\\.");
+					// e.g. Bukkit.getBukkitVersion() -> 1.17.1-R0.1-SNAPSHOT
+					versions = Bukkit.getBukkitVersion().split("-R")[0].split("\\.");
 					versionMinor = versions.length <= 2 ? 0 : Integer.parseInt(versions[2]);
 				}else versionMinor = Integer.parseInt(versions[2].substring(1)); // 1.X.Y
 				
@@ -373,7 +375,7 @@ public class Laser {
 				watcherRegister = getMethod(dataWatcherClass, "register");
 				if (version >= 15) watcherDirty = getMethod(dataWatcherClass, "markDirty");
 				packetSpawn = getNMSClass("network.protocol.game", "PacketPlayOutSpawnEntityLiving").getDeclaredConstructor(version < 17 ? new Class<?>[0] : new Class<?>[] { getNMSClass("world.entity", "EntityLiving") });
-				packetRemove = getNMSClass("network.protocol.game", "PacketPlayOutEntityDestroy").getDeclaredConstructor(version < 17 ? int[].class : int.class);
+				packetRemove = getNMSClass("network.protocol.game", "PacketPlayOutEntityDestroy").getDeclaredConstructor(version == 17 && versionMinor == 0 ? int.class : int[].class);
 				packetMetadata = getNMSClass("network.protocol.game", "PacketPlayOutEntityMetadata").getDeclaredConstructor(int.class, dataWatcherClass, boolean.class);
 				packetTeleport = getNMSClass("network.protocol.game", "PacketPlayOutEntityTeleport").getDeclaredConstructor(version < 17 ? new Class<?>[0] : new Class<?>[] { entityClass });
 				packetTeam = getNMSClass("network.protocol.game", "PacketPlayOutScoreboardTeam");
