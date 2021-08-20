@@ -20,19 +20,24 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import fr.skytasul.guardianbeam.Laser.GuardianLaser;
+
 public class LaserDemo extends JavaPlugin implements Listener{
 
 	private Map<Player, LaserRunnable> lasers =new HashMap<>();
 	
+	@Override
 	public void onEnable(){
 		getServer().getPluginManager().registerEvents(this, this);
 	}
 	
+	@Override
 	public void onDisable(){
 		lasers.forEach((p, run) -> run.laser.stop());
 	}
 	
   // Command needed in plugin.yml
+	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
 		if (!(sender instanceof Player)) return true;
 		Player p = (Player) sender;
@@ -96,17 +101,18 @@ public class LaserDemo extends JavaPlugin implements Listener{
 		public static final byte LOADING_TIME = 30;
 		public static final byte RANGE = 10;
 		
-		private final Laser laser;
+		private final GuardianLaser laser;
 		private final Player p;
 		
 		public byte loading = 0;
 		
 		public LaserRunnable(Player p) throws ReflectiveOperationException{
 			this.p = p;
-			this.laser = new Laser(p.getLocation(), p.getLocation().add(0, 1, 0), -1, 50);
+			this.laser = new GuardianLaser(p.getLocation(), p.getLocation().add(0, 1, 0), -1, 50);
 			this.laser.start(LaserDemo.this);
 		}
 		
+		@Override
 		public void run(){
 			if (loading != LOADING_TIME){
 				loading++;
@@ -120,6 +126,7 @@ public class LaserDemo extends JavaPlugin implements Listener{
 			}
 		}
     
+		@Override
 		public synchronized void cancel() throws IllegalStateException{
 			laser.stop();
 			lasers.remove(p);

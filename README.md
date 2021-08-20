@@ -1,11 +1,11 @@
 # GuardianBeam
-An util to create easily Guardians Lasers via Packets and Reflection. No ProtocolLib, compatible from Minecraft 1.9 to Minecraft 1.17.1!
+An util to create easily Guardians and Ender Crystal Lasers via Packets and Reflection. No ProtocolLib, compatible from Minecraft 1.9 to Minecraft 1.17.1!
 
 Inspired by the plugin GuardianBeamAPI by [Jaxon A Brown](https://www.spigotmc.org/resources/authors/merpg.33142/), which uses ProtocolLib (https://www.spigotmc.org/resources/guardianbeamapi.18329/)
 
 There is a [tutorial on SpigotMC](https://www.spigotmc.org/threads/tutorial-laser-guardian-beam.348901/)
 
-![Static laser image](https://github.com/SkytAsul/GuardianBeam/blob/master/Beam.gif?raw=true)
+![Static laser gif](https://github.com/SkytAsul/GuardianBeam/blob/master/Beam.gif?raw=true)
 
 ## How to use ?
 First, copy the [Laser.java class](https://github.com/SkytAsul/GuardianBeam/blob/master/src/main/java/fr/skytasul/guardianbeam/Laser.java) to your project.
@@ -13,7 +13,7 @@ First, copy the [Laser.java class](https://github.com/SkytAsul/GuardianBeam/blob
 Then, it's extremely simple:
 
 1. Create Location objects of where do you want your laser starts and ends.
-2. Create a Laser instance: `new Laser(locationStart, locationEnd, duration, visibleDistance)` - duration is the time (in seconds) when laser will be visible (if you set it to -1, the laser will exist infinitely), and visibleDistance is the amount of blocks where your laser will be visible.
+2. Create a Laser instance: `new GuardianLaser(locationStart, locationEnd, duration, visibleDistance)` - duration is the time (in seconds) when laser will be visible (if you set it to -1, the laser will exist infinitely), and visibleDistance is the amount of blocks where your laser will be visible. You can also use `new CrystalLaser(...)` to create an Ender Crystal laser.
 3. After this, call the method `laser.start(plugin);` - where "plugin" parameter is the instance of your JavaPlugin class.
 4. TA-DAAAM ! Your laser is created and shown to near players !
 5. You can move the laser with the methods `laser.moveStart(newLocation);` and `laser.moveEnd(newLocation);`
