@@ -47,12 +47,12 @@ public abstract class Laser {
 	
 	private List<Runnable> executeEnd = new ArrayList<>(1);
 
-	protected Laser(Location start, Location end, int duration, int distance) throws ReflectiveOperationException {
+	protected Laser(Location start, Location end, int duration, int distance) {
 		if (!Packets.enabled) throw new IllegalStateException("The Laser Beam API is disabled. An error has occured during initialization.");
 		this.start = start;
 		this.end = end;
 		this.duration = duration;
-		distanceSquared = distance * distance;
+		distanceSquared = distance < 0 ? -1 : distance * distance;
 	}
 	
 	/**
@@ -118,6 +118,7 @@ public abstract class Laser {
 					for (Player p : show) {
 						sendDestroyPackets(p);
 					}
+					show.clear();
 					executeEnd.forEach(Runnable::run);
 				}catch (ReflectiveOperationException e) {
 					e.printStackTrace();
@@ -186,6 +187,7 @@ public abstract class Laser {
 	
 	private BukkitTask moveInternal(Location location, int ticks, BukkitTask oldTask, Supplier<Location> locationSupplier, ReflectiveConsumer<Location> moveConsumer, Runnable callback) {
 		Validate.isTrue(ticks > 0);
+		Validate.isTrue(plugin != null, "Task didn't start once");
 		if (oldTask != null && !oldTask.isCancelled()) oldTask.cancel();
 		return new BukkitRunnable() {
 			double xPerTick = (location.getX() - locationSupplier.get().getX()) / ticks;
@@ -256,7 +258,7 @@ public abstract class Laser {
 		* @param start Location where laser will starts
 		* @param end Location where laser will ends
 		* @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
-		* @param distance Distance where laser will be visible
+		* @param distance Distance where laser will be visible (<i>-1 is infinite</i>)
 		* @see {@link Laser#durationInTicks} to make the duration in ticks
 		* @see {@link Laser#executeEnd} to add {@link Runnable}s to execute when the laser will stop
 		 */
@@ -265,7 +267,7 @@ public abstract class Laser {
 			
 			if (Packets.version < 17) {
 				squid = null;
-				createSquidPacket = Packets.createPacketEntitySpawnLiving(end, Packets.squidID, Packets.fakeSquidWatcher);
+				createSquidPacket = Packets.createPacketEntitySpawnLiving(end, Packets.squidID);
 			}else {
 				squid = Packets.createSquid(end);
 				createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
@@ -279,7 +281,7 @@ public abstract class Laser {
 			Packets.initGuardianWatcher(fakeGuardianDataWatcher, squidID);
 			if (Packets.version < 17) {
 				guardian = null;
-				createGuardianPacket = Packets.createPacketEntitySpawnLiving(start, Packets.guardianID, fakeGuardianDataWatcher);
+				createGuardianPacket = Packets.createPacketEntitySpawnLiving(start, Packets.guardianID);
 			}else {
 				guardian = Packets.createGuardian(start);
 				createGuardianPacket = Packets.createPacketEntitySpawnLiving(guardian);
@@ -350,7 +352,7 @@ public abstract class Laser {
 		* @param start Location where laser will starts. The Crystal laser do not handle decimal number, it will be rounded to blocks.
 		* @param end Location where laser will ends. The Crystal laser do not handle decimal number, it will be rounded to blocks.
 		* @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
-		* @param distance Distance where laser will be visible
+		* @param distance Distance where laser will be visible (<i>-1 is infinite</i>)
 		* @see {@link Laser#durationInTicks} to make the duration in ticks
 		* @see {@link Laser#executeEnd} to add {@link Runnable}s to execute when the laser will stop
 		 */
@@ -361,7 +363,7 @@ public abstract class Laser {
 			Packets.setCrystalWatcher(fakeCrystalDataWatcher, end);
 			if (Packets.version < 17) {
 				crystal = null;
-				createCrystalPacket = Packets.createPacketEntitySpawnNormal(start, Packets.crystalID, Packets.crystalType, fakeCrystalDataWatcher);
+				createCrystalPacket = Packets.createPacketEntitySpawnNormal(start, Packets.crystalID, Packets.crystalType);
 			}else {
 				crystal = Packets.createCrystal(start);
 				createCrystalPacket = Packets.createPacketEntitySpawnNormal(crystal);
@@ -648,7 +650,7 @@ public abstract class Laser {
 			return getNMSClass("world.entity.boss.enderdragon", "EntityEnderCrystal").getDeclaredConstructor(nmsWorld.getClass().getSuperclass(), double.class, double.class, double.class).newInstance(nmsWorld, location.getX(), location.getY(), location.getZ());
 		}
 
-		public static Object createPacketEntitySpawnLiving(Location location, int typeID, Object watcher) throws ReflectiveOperationException {
+		public static Object createPacketEntitySpawnLiving(Location location, int typeID) throws ReflectiveOperationException {
 			Object packet = packetSpawnLiving.newInstance();
 			setField(packet, "a", generateEID());
 			setField(packet, "b", UUID.randomUUID());
@@ -662,7 +664,7 @@ public abstract class Laser {
 			return packet;
 		}
 		
-		public static Object createPacketEntitySpawnNormal(Location location, int typeID, Object type, Object watcher) throws ReflectiveOperationException {
+		public static Object createPacketEntitySpawnNormal(Location location, int typeID, Object type) throws ReflectiveOperationException {
 			Object packet = packetSpawnNormal.newInstance();
 			setField(packet, "a", generateEID());
 			setField(packet, "b", UUID.randomUUID());
