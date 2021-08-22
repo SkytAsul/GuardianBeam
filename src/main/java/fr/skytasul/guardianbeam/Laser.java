@@ -258,7 +258,7 @@ public abstract class Laser {
 		* @param start Location where laser will starts
 		* @param end Location where laser will ends
 		* @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
-		* @param distance Distance where laser will be visible (<i>-1 is infinite</i>)
+		* @param distance Distance where laser will be visible (<i>-1 if infinite</i>)
 		* @see {@link Laser#durationInTicks} to make the duration in ticks
 		* @see {@link Laser#executeEnd} to add {@link Runnable}s to execute when the laser will stop
 		 */
@@ -352,7 +352,7 @@ public abstract class Laser {
 		* @param start Location where laser will starts. The Crystal laser do not handle decimal number, it will be rounded to blocks.
 		* @param end Location where laser will ends. The Crystal laser do not handle decimal number, it will be rounded to blocks.
 		* @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
-		* @param distance Distance where laser will be visible (<i>-1 is infinite</i>)
+		* @param distance Distance where laser will be visible (<i>-1 if infinite</i>)
 		* @see {@link Laser#durationInTicks} to make the duration in ticks
 		* @see {@link Laser#executeEnd} to add {@link Runnable}s to execute when the laser will stop
 		 */
