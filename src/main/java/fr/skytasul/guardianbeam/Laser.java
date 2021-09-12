@@ -24,8 +24,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
- * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.</br>
- * Inspired by the API <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a></br>
+ * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
+ * Inspired by the API <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
  * <b>1.9 -> 1.17.1</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub page</a>
@@ -130,7 +130,8 @@ public abstract class Laser {
 	}
 
 	/**
-	 * Stops this laser.
+	 * Stops this laser.<br>
+	 * 
 	 * This will destroy the laser for every player and start execute all runnables passed with {@link Laser#executeEnd}
 	 */
 	public void stop() {
@@ -147,14 +148,14 @@ public abstract class Laser {
 	/**
 	 * Instantly moves the start of the laser to the location provided.
 	 * @param location New start location
-	 * @throws ReflectiveOperationException
+	 * @throws ReflectiveOperationException if a reflection exception occurred during laser moving
 	 */
 	public abstract void moveStart(Location location) throws ReflectiveOperationException;
 	
 	/**
 	 * Instantly moves the end of the laser to the location provided.
 	 * @param location New end location
-	 * @throws ReflectiveOperationException
+	 * @throws ReflectiveOperationException if a reflection exception occurred during laser moving
 	 */
 	public abstract void moveEnd(Location location) throws ReflectiveOperationException;
 	
@@ -261,8 +262,9 @@ public abstract class Laser {
 		* @param end Location where laser will ends
 		* @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
 		* @param distance Distance where laser will be visible (<i>-1 if infinite</i>)
-		* @see {@link Laser#durationInTicks} to make the duration in ticks
-		* @see {@link Laser#executeEnd} to add {@link Runnable}s to execute when the laser will stop
+		* @throws ReflectiveOperationException if a reflection exception occurred during Laser creation
+		* @see #durationInTicks() to make the duration in ticks
+		* @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
 		 */
 		public GuardianLaser(Location start, Location end, int duration, int distance) throws ReflectiveOperationException {
 			super(start, end, duration, distance);
@@ -353,8 +355,9 @@ public abstract class Laser {
 		* @param end Location where laser will ends. The Crystal laser do not handle decimal number, it will be rounded to blocks.
 		* @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
 		* @param distance Distance where laser will be visible (<i>-1 if infinite</i>)
-		* @see {@link Laser#durationInTicks} to make the duration in ticks
-		* @see {@link Laser#executeEnd} to add {@link Runnable}s to execute when the laser will stop
+		* @throws ReflectiveOperationException if a reflection exception occurred during Laser creation
+		* @see #durationInTicks() to make the duration in ticks
+		* @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
 		 */
 		public CrystalLaser(Location start, Location end, int duration, int distance) throws ReflectiveOperationException {
 			super(start, end, duration, distance);
@@ -419,8 +422,9 @@ public abstract class Laser {
 		* @param end Location where laser will ends
 		* @param duration Duration of laser in seconds (<i>-1 if infinite</i>)
 		* @param distance Distance where laser will be visible
-		* @see {@link Laser#durationInTicks} to make the duration in ticks
-		* @see {@link Laser#executeEnd} to add {@link Runnable}s to execute when the laser will stop
+		* @throws ReflectiveOperationException if a reflection exception occurred during Laser creation
+		* @see #durationInTicks() to make the duration in ticks
+		* @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
 		 */
 		public Laser create(Location start, Location end, int duration, int distance) throws ReflectiveOperationException {
 			switch (this) {
