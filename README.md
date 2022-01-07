@@ -1,21 +1,34 @@
 # GuardianBeam
-An util to create easily Guardians and Ender Crystal Lasers via Packets and Reflection. No ProtocolLib, compatible from Minecraft 1.9 to Minecraft 1.17.1!
+An util to create easily Guardians and Ender Crystal Lasers via Packets and Reflection. No ProtocolLib, no dependency, compatible from Minecraft 1.9 to Minecraft 1.18.1!
 
-Inspired by the plugin GuardianBeamAPI by [Jaxon A Brown](https://www.spigotmc.org/resources/authors/merpg.33142/), which uses ProtocolLib (https://www.spigotmc.org/resources/guardianbeamapi.18329/)
+Inspired by the plugin [GuardianBeamAPI by Jaxon A Brown](https://www.spigotmc.org/resources/18329), which uses ProtocolLib.
 
-There is a [tutorial on SpigotMC](https://www.spigotmc.org/threads/tutorial-laser-guardian-beam.348901/)
+There is a [page on SpigotMC](https://www.spigotmc.org/threads/tutorial-laser-guardian-beam.348901/).
 
 ![Static laser gif](https://github.com/SkytAsul/GuardianBeam/blob/master/Beam.gif?raw=true)
 
-## How to use ?
+## How to install?
+### 1st method: copying class
 First, copy the [Laser.java class](https://github.com/SkytAsul/GuardianBeam/blob/master/src/main/java/fr/skytasul/guardianbeam/Laser.java) to your project.
 
-Then, it's extremely simple:
+### 2nd method: using maven
+Add this requirement to your maven `pom.xml` file:
 
+```xml
+<dependency>
+  <groupId>io.github.skytasul</groupId>
+  <artifactId>guardianbeam</artifactId>
+  <version>2.1.0</version>
+  <scope>compile</scope>
+</dependency>
+```
+Additionnally, you can use the maven shade plugin to relocate the class location.
+
+## How to use?
 1. Create Location objects of where do you want your laser starts and ends.
 2. Create a Laser instance: `new GuardianLaser(locationStart, locationEnd, duration, visibleDistance)` - duration is the time (in seconds) when laser will be visible (if you set it to -1, the laser will exist infinitely), and visibleDistance is the amount of blocks where your laser will be visible. You can also use `new CrystalLaser(...)` to create an Ender Crystal laser.
-3. After this, call the method `laser.start(plugin);` - where "plugin" parameter is the instance of your JavaPlugin class.
-4. TA-DAAAM ! Your laser is created and shown to near players !
+3. After this, call the method `laser.start(plugin);` (where "plugin" parameter is the instance of your JavaPlugin class).
+4. Ta-daaa! Your laser is created and shown to nearby players!
 5. You can move the laser with the methods `laser.moveStart(newLocation);` and `laser.moveEnd(newLocation);`
 6. To remove your laser before his end duration, just call `laser.stop();`
 
@@ -37,7 +50,8 @@ Quick preview of the smooth movement:
 ### End runnable
 If you want to execute some actions when the laser comes to its end, use the `Laser#executeEnd(Runnable runnable)` method.
 
-i.e.:
+In example:
+
 ```java
 new Laser(start, end, 10, 60).executeEnd(() -> Bukkit.broadcastMessage("Laser ended!")).start(plugin);
 ```
@@ -46,7 +60,8 @@ This will start a laser for 10 seconds, after that the message "Laser ended!" wi
 ### Duration in ticks
 The duration passed into the `new Laser(Location start, Location end, int duration, int distance)` constructor is in seconds. If you want it to be in ticks, call `Laser#durationInTicks()`.
 
-i.e.:
+In example:
+
 ```java
 new Laser(start, end, 10, 60).durationInTicks().start(plugin);
 ```
