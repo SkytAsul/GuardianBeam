@@ -307,8 +307,8 @@ public abstract class Laser {
 			} else {
 				createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
 			}
-			metadataPacketSquid = Laser.Packets.createPacketMetadata(squidID, Laser.Packets.fakeSquidWatcher);
-			Laser.Packets.setDirtyWatcher(Laser.Packets.fakeSquidWatcher);
+			metadataPacketSquid = Packets.createPacketMetadata(squidID, Packets.fakeSquidWatcher);
+			Packets.setDirtyWatcher(Packets.fakeSquidWatcher);
 			
 			fakeGuardianDataWatcher = Packets.createFakeDataWatcher();
 			Packets.initGuardianWatcher(fakeGuardianDataWatcher, squidID);
