@@ -5,11 +5,11 @@ Inspired by the plugin [GuardianBeamAPI by Jaxon A Brown](https://www.spigotmc.o
 
 There is a [page on SpigotMC](https://www.spigotmc.org/threads/tutorial-laser-guardian-beam.348901/).
 
-![Static laser gif](https://github.com/SkytAsul/GuardianBeam/blob/master/Beam.gif?raw=true)
+![Static laser gif](Beam.gif)
 
 ## How to install?
 ### 1st method: copying class
-First, copy the [Laser.java class](https://github.com/SkytAsul/GuardianBeam/blob/master/src/main/java/fr/skytasul/guardianbeam/Laser.java) to your project.
+First, copy the [Laser.java class](src/main/java/fr/skytasul/guardianbeam/Laser.java) to your project.
 
 ### 2nd method: using maven
 Add this requirement to your maven `pom.xml` file:
@@ -18,7 +18,7 @@ Add this requirement to your maven `pom.xml` file:
 <dependency>
   <groupId>io.github.skytasul</groupId>
   <artifactId>guardianbeam</artifactId>
-  <version>2.1.0</version>
+  <version>2.2.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -35,9 +35,9 @@ Additionnally, you can use the maven shade plugin to relocate the class location
 ## Demo
 Here is something I quickly made to show what you can do with this API: a ray-gun.
 
-![Moving laser animation](https://github.com/SkytAsul/GuardianBeam/blob/master/Moving%20Beam.gif?raw=true)
+![Moving laser animation](Moving%20Beam.gif)
 
-You can see the system in action [on this video](https://youtu.be/NSYMKsPBdMM), and the class is available [here](https://github.com/SkytAsul/GuardianBeam/blob/master/LaserDemo.java).
+You can see the system in action [on this video](https://youtu.be/NSYMKsPBdMM), and the class is available [here](LaserDemo.java).
 
 ## Advanced usage
 ### Animations
@@ -45,7 +45,7 @@ The `Laser#moveStart(Location location, int ticks, Runnable callback` and `Laser
 
 Quick preview of the smooth movement:
 
-![Smooth laser animation](https://github.com/SkytAsul/GuardianBeam/blob/master/Smooth%20Moving%20Beam.gif?raw=true)
+![Smooth laser animation](Smooth%20Moving%20Beam.gif)
 
 ### End runnable
 If you want to execute some actions when the laser comes to its end, use the `Laser#executeEnd(Runnable runnable)` method.
