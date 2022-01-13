@@ -53,17 +53,17 @@ If you want to execute some actions when the laser comes to its end, use the `La
 In example:
 
 ```java
-new Laser(start, end, duration, distance).executeEnd(() -> Bukkit.broadcastMessage("Laser ended!")).start(plugin);
+new GuardianLaser(start, end, duration, distance).executeEnd(() -> Bukkit.broadcastMessage("Laser ended!")).start(plugin);
 ```
 This will start a laser for 10 seconds, after that the message "Laser ended!" will be broadcasted to users.
 
 ### Duration in ticks
-The duration passed into the `new Laser(Location start, Location end, int duration, int distance)` constructor is in seconds. If you want it to be in ticks, call `Laser#durationInTicks()`.
+The duration passed into the `new GuardianLaser(Location start, Location end, int duration, int distance)` constructor is in seconds. If you want it to be in ticks, call `Laser#durationInTicks()`.
 
 In example:
 
 ```java
-new Laser(start, end, durationInTicks, distance).durationInTicks().start(plugin);
+new GuardianLaser(start, end, durationInTicks, distance).durationInTicks().start(plugin);
 ```
 This will start a laser for 10 ticks.
 
@@ -74,12 +74,12 @@ an existing entity of the world, without having to create a runnable which updat
 To achieve this, you can either spawn the laser directly using this code:
 
 ```java
-new Laser(start, endEntity, duration, distance).start(plugin);
+new GuardianLaser(start, endEntity, duration, distance).start(plugin);
 ```
 
-Or, after spawning a laser with a custom end location, use `Laser#attachEndEntity(LivingEntity endEntity)` to track the entity.
+Or, after spawning a laser with a custom end location, use `GuardianLaser#attachEndEntity(LivingEntity endEntity)` to track the entity.
 
-You can also use a combination of `Laser#moveEnd(Location endLocation)` and `Laser#attachEndEntity(LivingEntity endEntity)` as many times and in the order you want.
+You can also use a combination of `GuardianLaser#moveEnd(Location endLocation)` and `GuardianLaser#attachEndEntity(LivingEntity endEntity)` as many times and in the order you want.
 
 Quick preview:
 
