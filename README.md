@@ -53,7 +53,7 @@ If you want to execute some actions when the laser comes to its end, use the `La
 In example:
 
 ```java
-new Laser(start, end, 10, 60).executeEnd(() -> Bukkit.broadcastMessage("Laser ended!")).start(plugin);
+new Laser(start, end, duration, distance).executeEnd(() -> Bukkit.broadcastMessage("Laser ended!")).start(plugin);
 ```
 This will start a laser for 10 seconds, after that the message "Laser ended!" will be broadcasted to users.
 
@@ -63,9 +63,27 @@ The duration passed into the `new Laser(Location start, Location end, int durati
 In example:
 
 ```java
-new Laser(start, end, 10, 60).durationInTicks().start(plugin);
+new Laser(start, end, durationInTicks, distance).durationInTicks().start(plugin);
 ```
 This will start a laser for 10 ticks.
+
+### Make guardian laser follow entity smoothly
+As the laser is made out of a guardian entity shooting a laser at an entity, it is possible to make the laser follow
+an existing entity of the world, without having to create a runnable which updates the laser position every tick.
+
+To achieve this, you can either spawn the laser directly using this code:
+
+```java
+new Laser(start, endEntity, duration, distance).start(plugin);
+```
+
+Or, after spawning a laser with a custom end location, use `Laser#attachEndEntity(LivingEntity endEntity)` to track the entity.
+
+You can also use a combination of `Laser#moveEnd(Location endLocation)` and `Laser#attachEndEntity(LivingEntity endEntity)` as many times and in the order you want.
+
+Quick preview:
+
+![Smooth entity follow](Target%20Beam.gif)
 
 ## Troubleshooting
 Sometimes, Guardian beams only renders as bubbles, the moving color part is invisible.
@@ -73,3 +91,5 @@ It is not caused by this util but by a [Minecraft bug](https://bugs.mojang.com/b
 
 It happens when your world gets too old (when its game time value reaches 2800000).
 The only way to fix it is to open the `level.dat` file with a [NBT editor](https://github.com/jaquadro/NBTExplorer), and edit manually the `Data.Time` field to a lower value. Save the file, and start your server.
+
+There is also a client bug which makes the Guardian beams completely invisible when too vertical. Adding a small offset to the top location when this issue occurs should fix it.
