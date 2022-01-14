@@ -290,7 +290,7 @@ public abstract class Laser {
 			targetID = squidID;
 			targetUUID = squidUUID;
 			
-			initLaser();
+			initGuardian();
 		}
 		
 		/**
@@ -309,16 +309,16 @@ public abstract class Laser {
 			targetID = endEntity.getEntityId();
 			targetUUID = endEntity.getUniqueId();
 			
-			initLaser();
+			initGuardian();
 		}
 		
-		private void initLaser() throws ReflectiveOperationException {
+		private void initGuardian() throws ReflectiveOperationException {
 			fakeGuardianDataWatcher = Packets.createFakeDataWatcher();
 			Packets.initGuardianWatcher(fakeGuardianDataWatcher, targetID);
 			if (Packets.version < 17) {
 				guardian = null;
 				createGuardianPacket = Packets.createPacketEntitySpawnLiving(start, Packets.mappings.getGuardianID(), guardianUUID, guardianID);
-			}else {
+			} else {
 				guardian = Packets.createGuardian(start, guardianUUID, guardianID);
 				createGuardianPacket = Packets.createPacketEntitySpawnLiving(guardian);
 			}
@@ -328,17 +328,17 @@ public abstract class Laser {
 			destroyPackets = Packets.createPacketsRemoveEntities(squidID, guardianID);
 		}
     
-    private void initSquid() throws ReflectiveOperationException {
-      if (Packets.version < 17) {
-          squid = null;
-          createSquidPacket = Packets.createPacketEntitySpawnLiving(end, Packets.mappings.getSquidID(), squidUUID, squidID);
-      } else {
-          squid = Packets.createSquid(end, squidUUID, squidID);
-          createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
-      }
-      metadataPacketSquid = Packets.createPacketMetadata(squidID, Packets.fakeSquidWatcher);
-      Packets.setDirtyWatcher(Packets.fakeSquidWatcher);
-    }
+    	private void initSquid() throws ReflectiveOperationException {
+        	if (Packets.version < 17) {
+        	    squid = null;
+        	    createSquidPacket = Packets.createPacketEntitySpawnLiving(end, Packets.mappings.getSquidID(), squidUUID, squidID);
+        	} else {
+        	    squid = Packets.createSquid(end, squidUUID, squidID);
+        	    createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
+        	}
+        	metadataPacketSquid = Packets.createPacketMetadata(squidID, Packets.fakeSquidWatcher);
+        	Packets.setDirtyWatcher(Packets.fakeSquidWatcher);
+    	}
 		
 		@Override
 		public LaserType getLaserType() {
@@ -392,21 +392,21 @@ public abstract class Laser {
 		public void moveStart(Location location) throws ReflectiveOperationException {
 			this.start = location;
 			if (main != null) {
-       initGuardian();
-       if (guardian == null) {
-            for (Player p : show) {
-               Packets.sendPackets(p, createGuardianPacket, metadataPacketGuardian);
-            }
-       } else {
-            moveFakeEntity(start, guardianID, guardian);
-       }
+        		initGuardian();
+        		if (guardian == null) {
+            		for (Player p : show) {
+            		   Packets.sendPackets(p, createGuardianPacket, metadataPacketGuardian);
+            		}
+        	} else {
+            	moveFakeEntity(start, guardianID, guardian);
+        	}
     }
 		
 		@Override
 		public void moveEnd(Location location) throws ReflectiveOperationException {
 			this.end = location;
 			if (main != null) {
-        initSquid();
+        		initSquid();
 				if (squid == null) {
 					for (Player p : show) {
 						Packets.sendPackets(p, createSquidPacket, metadataPacketSquid);
