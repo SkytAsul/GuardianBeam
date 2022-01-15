@@ -303,7 +303,7 @@ public abstract class Laser {
 		* @see Laser#start(Plugin) to start the laser
 		* @see #durationInTicks() to make the duration in ticks
 		* @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
-		* @see #Laser(Location, LivingEntity, int, int) to create a laser which follows an entity
+		* @see #GuardianLaser(Location, LivingEntity, int, int) to create a laser which follows an entity
 		 */
 		public GuardianLaser(Location start, Location end, int duration, int distance) throws ReflectiveOperationException {
 			super(start, end, duration, distance);
@@ -326,7 +326,7 @@ public abstract class Laser {
 		* @see Laser#start(Plugin) to start the laser
 		* @see #durationInTicks() to make the duration in ticks
 		* @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
-		* @see #Laser(Location, Location, int, int) to create a laser with a specific end location
+		* @see #GuardianLaser(Location, Location, int, int) to create a laser with a specific end location
 		 */
 		public GuardianLaser(Location start, LivingEntity endEntity, int duration, int distance) throws ReflectiveOperationException {
 			super(start, endEntity.getLocation(), duration, distance);
@@ -406,6 +406,7 @@ public abstract class Laser {
 		private void setTargetEntity(UUID uuid, int id) throws ReflectiveOperationException {
 			targetUUID = uuid;
 			targetID = id;
+			fakeGuardianDataWatcher = Packets.createFakeDataWatcher();
 			Packets.initGuardianWatcher(fakeGuardianDataWatcher, targetID);
 			metadataPacketGuardian = Packets.createPacketMetadata(guardianID, fakeGuardianDataWatcher);
 			
@@ -698,12 +699,6 @@ public abstract class Laser {
 				watcherObject3 = getField(guardianClass, mappings.getWatcherTargetEntity(), null);
 				watcherObject4 = getField(crystalClass, mappings.getWatcherTargetLocation(), null);
 				watcherObject5 = getField(crystalClass, mappings.getWatcherBasePlate(), null);
-
-				squidConstructor = squidClass.getDeclaredConstructors()[0];
-				if (version >= 17) {
-					guardianConstructor = guardianClass.getDeclaredConstructors()[0];
-					crystalConstructor = crystalClass.getDeclaredConstructor(nmsWorld.getClass().getSuperclass(), double.class, double.class, double.class);
-				}
 				
 				if (version >= 13) {
 					crystalType = entityTypesClass.getDeclaredField(mappings.getCrystalTypeName()).get(null);
@@ -733,6 +728,13 @@ public abstract class Laser {
 				blockPositionConstructor = getNMSClass("core", "BlockPosition").getConstructor(double.class, double.class, double.class);
 				
 				nmsWorld = Class.forName(cpack + "CraftWorld").getDeclaredMethod("getHandle").invoke(Bukkit.getWorlds().get(0));
+				
+				squidConstructor = squidClass.getDeclaredConstructors()[0];
+				if (version >= 17) {
+					guardianConstructor = guardianClass.getDeclaredConstructors()[0];
+					crystalConstructor = crystalClass.getDeclaredConstructor(nmsWorld.getClass().getSuperclass(), double.class, double.class, double.class);
+				}
+				
 				Object[] entityConstructorParams = version < 14 ? new Object[] { nmsWorld } : new Object[] { entityTypesClass.getDeclaredField(version < 17 ? "SQUID" : "aJ").get(null), nmsWorld };
 				fakeSquid = squidConstructor.newInstance(entityConstructorParams);
 				fakeSquidWatcher = createFakeDataWatcher();
