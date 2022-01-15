@@ -141,7 +141,7 @@ public abstract class Laser {
 
 	/**
 	 * Stops this laser.<br>
-	 * 
+	 *
 	 * This will destroy the laser for every player and start execute all runnables passed with {@link Laser#executeEnd}
 	 */
 	public void stop() {
@@ -327,18 +327,18 @@ public abstract class Laser {
 			teamCreatePacket = Packets.createPacketTeamCreate("noclip" + teamID.getAndIncrement(), squidUUID, guardianUUID);
 			destroyPackets = Packets.createPacketsRemoveEntities(squidID, guardianID);
 		}
-    
-    	private void initSquid() throws ReflectiveOperationException {
-        	if (Packets.version < 17) {
-        	    squid = null;
-        	    createSquidPacket = Packets.createPacketEntitySpawnLiving(end, Packets.mappings.getSquidID(), squidUUID, squidID);
-        	} else {
-        	    squid = Packets.createSquid(end, squidUUID, squidID);
-        	    createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
-        	}
-        	metadataPacketSquid = Packets.createPacketMetadata(squidID, Packets.fakeSquidWatcher);
-        	Packets.setDirtyWatcher(Packets.fakeSquidWatcher);
-    	}
+		
+		private void initSquid() throws ReflectiveOperationException {
+			if (Packets.version < 17) {
+				squid = null;
+				createSquidPacket = Packets.createPacketEntitySpawnLiving(end, Packets.mappings.getSquidID(), squidUUID, squidID);
+			} else {
+				squid = Packets.createSquid(end, squidUUID, squidID);
+				createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
+			}
+			metadataPacketSquid = Packets.createPacketMetadata(squidID, Packets.fakeSquidWatcher);
+			Packets.setDirtyWatcher(Packets.fakeSquidWatcher);
+		}
 		
 		@Override
 		public LaserType getLaserType() {
@@ -392,15 +392,16 @@ public abstract class Laser {
 		public void moveStart(Location location) throws ReflectiveOperationException {
 			this.start = location;
 			if (main != null) {
-        		initGuardian();
-        		if (guardian == null) {
-            		for (Player p : show) {
-            		   Packets.sendPackets(p, createGuardianPacket, metadataPacketGuardian);
-            		}
-        	} else {
-            	moveFakeEntity(start, guardianID, guardian);
-        	}
-    }
+				initGuardian();
+				if (guardian == null) {
+					for (Player p : show) {
+						Packets.sendPackets(p, createGuardianPacket, metadataPacketGuardian);
+					}
+				} else {
+					moveFakeEntity(start, guardianID, guardian);
+				}
+			}
+		}
 		
 		@Override
 		public void moveEnd(Location location) throws ReflectiveOperationException {
