@@ -323,9 +323,6 @@ public abstract class Laser {
 				createGuardianPacket = Packets.createPacketEntitySpawnLiving(guardian);
 			}
 			metadataPacketGuardian = Packets.createPacketMetadata(guardianID, fakeGuardianDataWatcher);
-			
-			teamCreatePacket = Packets.createPacketTeamCreate("noclip" + teamID.getAndIncrement(), squidUUID, guardianUUID);
-			destroyPackets = Packets.createPacketsRemoveEntities(squidID, guardianID);
 		}
 		
 		private void initSquid() throws ReflectiveOperationException {
@@ -393,13 +390,7 @@ public abstract class Laser {
 			this.start = location;
 			if (main != null) {
 				initGuardian();
-				if (guardian == null) {
-					for (Player p : show) {
-						Packets.sendPackets(p, createGuardianPacket, metadataPacketGuardian);
-					}
-				} else {
-					moveFakeEntity(start, guardianID, guardian);
-				}
+				moveFakeEntity(start, guardianID, guardian);
 			}
 		}
 		
@@ -480,8 +471,6 @@ public abstract class Laser {
 				createCrystalPacket = Packets.createPacketEntitySpawnNormal(crystal);
 			}
 			metadataPacketCrystal = Packets.createPacketMetadata(crystalID, fakeCrystalDataWatcher);
-			
-			destroyPackets = Packets.createPacketsRemoveEntities(crystalID);
 		}
 		
 		@Override
