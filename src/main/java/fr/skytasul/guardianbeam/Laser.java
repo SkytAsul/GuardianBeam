@@ -388,8 +388,8 @@ public abstract class Laser {
 		@Override
 		public void moveStart(Location location) throws ReflectiveOperationException {
 			this.start = location;
-			initGuardian();
 			if (main != null) {
+				initGuardian();
 				moveFakeEntity(start, guardianID, guardian);
 			}
 		}
@@ -397,8 +397,8 @@ public abstract class Laser {
 		@Override
 		public void moveEnd(Location location) throws ReflectiveOperationException {
 			this.end = location;
-			initSquid();
 			if (main != null) {
+				initSquid();
 				if (squid == null) {
 					for (Player p : show) {
 						Packets.sendPackets(p, createSquidPacket, metadataPacketSquid);
