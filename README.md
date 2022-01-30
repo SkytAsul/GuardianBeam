@@ -18,7 +18,7 @@ Add this requirement to your maven `pom.xml` file:
 <dependency>
   <groupId>io.github.skytasul</groupId>
   <artifactId>guardianbeam</artifactId>
-  <version>2.2.0</version>
+  <version>2.2.2</version>
   <scope>compile</scope>
 </dependency>
 ```

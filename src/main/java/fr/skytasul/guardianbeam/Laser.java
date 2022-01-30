@@ -35,7 +35,7 @@ import org.bukkit.scheduler.BukkitTask;
  * <b>1.9 -> 1.18.1</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub page</a>
- * @version 2.2.1
+ * @version 2.2.2
  * @author SkytAsul
  */
 public abstract class Laser {
