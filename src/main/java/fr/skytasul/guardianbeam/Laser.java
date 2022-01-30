@@ -245,11 +245,13 @@ public abstract class Laser {
 	}
 	
 	protected void moveFakeEntity(Location location, int entityId, Object fakeEntity) throws ReflectiveOperationException {
+		if (fakeEntity != null) Packets.moveFakeEntity(fakeEntity, location);
+		if (main == null) return;
+		
 		Object packet;
 		if (fakeEntity == null) {
 			packet = Packets.createPacketMoveEntity(location, entityId);
 		}else {
-			Packets.moveFakeEntity(fakeEntity, location);
 			packet = Packets.createPacketMoveEntity(fakeEntity);
 		}
 		for (Player p : show) {
@@ -301,7 +303,7 @@ public abstract class Laser {
 		* @see Laser#start(Plugin) to start the laser
 		* @see #durationInTicks() to make the duration in ticks
 		* @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
-		* @see #Laser(Location, LivingEntity, int, int) to create a laser which follows an entity
+		* @see #GuardianLaser(Location, LivingEntity, int, int) to create a laser which follows an entity
 		 */
 		public GuardianLaser(Location start, Location end, int duration, int distance) throws ReflectiveOperationException {
 			super(start, end, duration, distance);
@@ -324,7 +326,7 @@ public abstract class Laser {
 		* @see Laser#start(Plugin) to start the laser
 		* @see #durationInTicks() to make the duration in ticks
 		* @see #executeEnd(Runnable) to add Runnable-s to execute when the laser will stop
-		* @see #Laser(Location, Location, int, int) to create a laser with a specific end location
+		* @see #GuardianLaser(Location, Location, int, int) to create a laser with a specific end location
 		 */
 		public GuardianLaser(Location start, LivingEntity endEntity, int duration, int distance) throws ReflectiveOperationException {
 			super(start, endEntity.getLocation(), duration, distance);
@@ -338,12 +340,8 @@ public abstract class Laser {
 		private void initLaser() throws ReflectiveOperationException {
 			fakeGuardianDataWatcher = Packets.createFakeDataWatcher();
 			Packets.initGuardianWatcher(fakeGuardianDataWatcher, targetID);
-			if (Packets.version < 17) {
-				guardian = null;
-				createGuardianPacket = Packets.createPacketEntitySpawnLiving(start, Packets.mappings.getGuardianID(), guardianUUID, guardianID);
-			}else {
+			if (Packets.version >= 17) {
 				guardian = Packets.createGuardian(start, guardianUUID, guardianID);
-				createGuardianPacket = Packets.createPacketEntitySpawnLiving(guardian);
 			}
 			metadataPacketGuardian = Packets.createPacketMetadata(guardianID, fakeGuardianDataWatcher);
 			
@@ -352,15 +350,33 @@ public abstract class Laser {
 		}
 		
 		private void initSquid() throws ReflectiveOperationException {
-			if (Packets.version < 17) {
-				squid = null;
-				createSquidPacket = Packets.createPacketEntitySpawnLiving(end, Packets.mappings.getSquidID(), squidUUID, squidID);
-			}else {
+			if (Packets.version >= 17) {
 				squid = Packets.createSquid(end, squidUUID, squidID);
-				createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
 			}
 			metadataPacketSquid = Packets.createPacketMetadata(squidID, Packets.fakeSquidWatcher);
 			Packets.setDirtyWatcher(Packets.fakeSquidWatcher);
+		}
+		
+		private Object getGuardianSpawnPacket() throws ReflectiveOperationException {
+			if (createGuardianPacket == null) {
+				if (Packets.version < 17) {
+					createGuardianPacket = Packets.createPacketEntitySpawnLiving(start, Packets.mappings.getGuardianID(), guardianUUID, guardianID);
+				}else {
+					createGuardianPacket = Packets.createPacketEntitySpawnLiving(guardian);
+				}
+			}
+			return createGuardianPacket;
+		}
+		
+		private Object getSquidSpawnPacket() throws ReflectiveOperationException {
+			if (createSquidPacket == null) {
+				if (Packets.version < 17) {
+					createSquidPacket = Packets.createPacketEntitySpawnLiving(end, Packets.mappings.getSquidID(), squidUUID, squidID);
+				}else {
+					createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
+				}
+			}
+			return createSquidPacket;
 		}
 		
 		@Override
@@ -390,6 +406,7 @@ public abstract class Laser {
 		private void setTargetEntity(UUID uuid, int id) throws ReflectiveOperationException {
 			targetUUID = uuid;
 			targetID = id;
+			fakeGuardianDataWatcher = Packets.createFakeDataWatcher();
 			Packets.initGuardianWatcher(fakeGuardianDataWatcher, targetID);
 			metadataPacketGuardian = Packets.createPacketMetadata(guardianID, fakeGuardianDataWatcher);
 			
@@ -410,7 +427,7 @@ public abstract class Laser {
 		
 		@Override
 		protected void sendStartPackets(Player p, boolean hasSeen) throws ReflectiveOperationException {
-			Packets.sendPackets(p, createGuardianPacket, createSquidPacket);
+			Packets.sendPackets(p, getGuardianSpawnPacket(), getSquidSpawnPacket());
 			Packets.sendPackets(p, metadataPacketGuardian, metadataPacketSquid);
 			if (!hasSeen) Packets.sendPackets(p, teamCreatePacket);
 		}
@@ -423,21 +440,21 @@ public abstract class Laser {
 		@Override
 		public void moveStart(Location location) throws ReflectiveOperationException {
 			this.start = location;
-			if (main != null) moveFakeEntity(start, guardianID, guardian);
+			createGuardianPacket = null; // will force re-generation of spawn packet
+			moveFakeEntity(start, guardianID, guardian);
 		}
 		
 		@Override
 		public void moveEnd(Location location) throws ReflectiveOperationException {
 			this.end = location;
-			if (main != null) {
-				if (squid == null) {
-					initSquid();
-					for (Player p : show) {
-						Packets.sendPackets(p, createSquidPacket, metadataPacketSquid);
-					}
-				}else {
-					moveFakeEntity(end, squidID, squid);
+			createSquidPacket = null; // will force re-generation of spawn packet
+			if (squid == null) {
+				initSquid();
+				for (Player p : show) {
+					Packets.sendPackets(p, createSquidPacket, metadataPacketSquid);
 				}
+			}else {
+				moveFakeEntity(end, squidID, squid);
 			}
 			if (targetUUID != squidUUID) {
 				endEntity = null;
@@ -464,8 +481,8 @@ public abstract class Laser {
 		private Object[] destroyPackets;
 		private Object fakeCrystalDataWatcher;
 		
-		private Object crystal;
-		private int crystalID;
+		private final Object crystal;
+		private final int crystalID = Packets.generateEID();
 		
 		/**
 		 * Creates a new Ender Crystal Laser instance
@@ -485,15 +502,23 @@ public abstract class Laser {
 			Packets.setCrystalWatcher(fakeCrystalDataWatcher, end);
 			if (Packets.version < 17) {
 				crystal = null;
-				createCrystalPacket = Packets.createPacketEntitySpawnNormal(start, Packets.crystalID, Packets.crystalType);
 			}else {
-				crystal = Packets.createCrystal(start);
-				createCrystalPacket = Packets.createPacketEntitySpawnNormal(crystal);
+				crystal = Packets.createCrystal(start, UUID.randomUUID(), crystalID);
 			}
-			crystalID = (int) Packets.getField(createCrystalPacket, Packets.version < 17 ? "a" : "c");
 			metadataPacketCrystal = Packets.createPacketMetadata(crystalID, fakeCrystalDataWatcher);
 			
 			destroyPackets = Packets.createPacketsRemoveEntities(crystalID);
+		}
+		
+		private Object getCrystalSpawnPacket() throws ReflectiveOperationException {
+			if (createCrystalPacket == null) {
+				if (Packets.version < 17) {
+					createCrystalPacket = Packets.createPacketEntitySpawnNormal(start, Packets.crystalID, Packets.crystalType, crystalID);
+				}else {
+					createCrystalPacket = Packets.createPacketEntitySpawnNormal(crystal);
+				}
+			}
+			return createCrystalPacket;
 		}
 		
 		@Override
@@ -503,7 +528,7 @@ public abstract class Laser {
 		
 		@Override
 		protected void sendStartPackets(Player p, boolean hasSeen) throws ReflectiveOperationException {
-			Packets.sendPackets(p, createCrystalPacket);
+			Packets.sendPackets(p, getCrystalSpawnPacket());
 			Packets.sendPackets(p, metadataPacketCrystal);
 		}
 		
@@ -515,7 +540,8 @@ public abstract class Laser {
 		@Override
 		public void moveStart(Location location) throws ReflectiveOperationException {
 			this.start = location;
-			if (main != null) moveFakeEntity(start, crystalID, crystal);
+			createCrystalPacket = null; // will force re-generation of spawn packet
+			moveFakeEntity(start, crystalID, crystal);
 		}
 		
 		@Override
@@ -673,12 +699,6 @@ public abstract class Laser {
 				watcherObject3 = getField(guardianClass, mappings.getWatcherTargetEntity(), null);
 				watcherObject4 = getField(crystalClass, mappings.getWatcherTargetLocation(), null);
 				watcherObject5 = getField(crystalClass, mappings.getWatcherBasePlate(), null);
-
-				squidConstructor = squidClass.getDeclaredConstructors()[0];
-				if (version >= 17) {
-					guardianConstructor = guardianClass.getDeclaredConstructors()[0];
-					crystalConstructor = crystalClass.getDeclaredConstructor(nmsWorld.getClass().getSuperclass(), double.class, double.class, double.class);
-				}
 				
 				if (version >= 13) {
 					crystalType = entityTypesClass.getDeclaredField(mappings.getCrystalTypeName()).get(null);
@@ -708,6 +728,13 @@ public abstract class Laser {
 				blockPositionConstructor = getNMSClass("core", "BlockPosition").getConstructor(double.class, double.class, double.class);
 				
 				nmsWorld = Class.forName(cpack + "CraftWorld").getDeclaredMethod("getHandle").invoke(Bukkit.getWorlds().get(0));
+				
+				squidConstructor = squidClass.getDeclaredConstructors()[0];
+				if (version >= 17) {
+					guardianConstructor = guardianClass.getDeclaredConstructors()[0];
+					crystalConstructor = crystalClass.getDeclaredConstructor(nmsWorld.getClass().getSuperclass(), double.class, double.class, double.class);
+				}
+				
 				Object[] entityConstructorParams = version < 14 ? new Object[] { nmsWorld } : new Object[] { entityTypesClass.getDeclaredField(version < 17 ? "SQUID" : "aJ").get(null), nmsWorld };
 				fakeSquid = squidConstructor.newInstance(entityConstructorParams);
 				fakeSquidWatcher = createFakeDataWatcher();
@@ -777,8 +804,10 @@ public abstract class Laser {
 			return entity;
 		}
 		
-		public static Object createCrystal(Location location) throws ReflectiveOperationException {
-			return crystalConstructor.newInstance(nmsWorld, location.getX(), location.getY(), location.getZ());
+		public static Object createCrystal(Location location, UUID uuid, int id) throws ReflectiveOperationException {
+			Object entity = crystalConstructor.newInstance(nmsWorld, location.getX(), location.getY(), location.getZ());
+			setEntityIDs(entity, uuid, id);
+			return entity;
 		}
 
 		public static Object createPacketEntitySpawnLiving(Location location, int typeID, UUID uuid, int id) throws ReflectiveOperationException {
@@ -795,9 +824,9 @@ public abstract class Laser {
 			return packet;
 		}
 		
-		public static Object createPacketEntitySpawnNormal(Location location, int typeID, Object type) throws ReflectiveOperationException {
+		public static Object createPacketEntitySpawnNormal(Location location, int typeID, Object type, int id) throws ReflectiveOperationException {
 			Object packet = packetSpawnNormal.newInstance();
-			setField(packet, "a", generateEID());
+			setField(packet, "a", id);
 			setField(packet, "b", UUID.randomUUID());
 			setField(packet, "c", location.getX());
 			setField(packet, "d", location.getY());
