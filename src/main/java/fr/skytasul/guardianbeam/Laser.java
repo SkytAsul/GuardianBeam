@@ -32,10 +32,10 @@ import org.bukkit.scheduler.BukkitTask;
 /**
  * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
  * Inspired by the API <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
- * <b>1.9 -> 1.18.1</b>
+ * <b>1.9 -> 1.18.2</b>
  *
- * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub page</a>
- * @version 2.2.2
+ * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
+ * @version 2.2.3
  * @author SkytAsul
  */
 public abstract class Laser {
@@ -427,8 +427,18 @@ public abstract class Laser {
 		
 		@Override
 		protected void sendStartPackets(Player p, boolean hasSeen) throws ReflectiveOperationException {
-			Packets.sendPackets(p, getGuardianSpawnPacket(), getSquidSpawnPacket());
-			Packets.sendPackets(p, metadataPacketGuardian, metadataPacketSquid);
+			if (squid == null) {
+				Packets.sendPackets(p,
+						getGuardianSpawnPacket(),
+						metadataPacketGuardian);
+			}else {
+				Packets.sendPackets(p,
+						getGuardianSpawnPacket(),
+						getSquidSpawnPacket(),
+						metadataPacketGuardian,
+						metadataPacketSquid);
+			}
+			
 			if (!hasSeen) Packets.sendPackets(p, teamCreatePacket);
 		}
 		
@@ -451,7 +461,7 @@ public abstract class Laser {
 			if (squid == null) {
 				initSquid();
 				for (Player p : show) {
-					Packets.sendPackets(p, createSquidPacket, metadataPacketSquid);
+					Packets.sendPackets(p, getSquidSpawnPacket(), metadataPacketSquid);
 				}
 			}else {
 				moveFakeEntity(end, squidID, squid);
@@ -681,6 +691,7 @@ public abstract class Laser {
 					versions = Bukkit.getBukkitVersion().split("-R")[0].split("\\.");
 					versionMinor = versions.length <= 2 ? 0 : Integer.parseInt(versions[2]);
 				}else versionMinor = Integer.parseInt(versions[2].substring(1)); // 1.X.Y
+				logger.info("Found server version 1." + version + "." + versionMinor);
 				
 				mappings = ProtocolMappings.getMappings(version);
 				if (mappings == null) {
@@ -948,12 +959,6 @@ public abstract class Laser {
 			return field.get(instance);
 		}
 		
-		private static Object getField(Object instance, String name) throws ReflectiveOperationException {
-			Field field = instance.getClass().getDeclaredField(name);
-			field.setAccessible(true);
-			return field.get(instance);
-		}
-		
 		private static Class<?> getNMSClass(String package17, String className) throws ClassNotFoundException {
 			return Class.forName((version < 17 ? npack : "net.minecraft." + package17) + "." + className);
 		}
@@ -972,19 +977,24 @@ public abstract class Laser {
 		V1_13(13, "ac", "bF", "bG", "b", "c", 70, 28),
 		V1_14(14, "W", "b", "bD", "c", "d", 73, 30),
 		V1_15(15, "T", "b", "bA", "c", "d", 74, 31),
-		V1_16(16, "T", "b", "d", "c", "d", 74, 31, "u", null, null){
+		V1_16(16, null, "b", "d", "c", "d", -1, 31, "u", null, null){
 			@Override
 			public int getSquidID() {
-				return Packets.versionMinor < 2 ? super.getSquidID() : 81;
+				return Packets.versionMinor < 2 ? 74 : 81;
 			}
 			
 			@Override
 			public String getWatcherFlags() {
-				return Packets.versionMinor < 2 ? super.getWatcherFlags() : "S";
+				return Packets.versionMinor < 2 ? "T" : "S";
 			}
 		},
 		V1_17(17, "Z", "b", "e", "c", "d", 86, 35, "u", "setCollisionRule", "getPlayerNameSet"),
-		V1_18(18, "aa", "b", "e", "c", "d", 86, 35, "u", "a", "g"),
+		V1_18(18, null, "b", "e", "c", "d", 86, 35, "u", "a", "g"){
+			@Override
+			public String getWatcherFlags() {
+				return Packets.versionMinor < 2 ? "aa" : "Z";
+			}
+		},
 		;
 		
 		private final int major;
