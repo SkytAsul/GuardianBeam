@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 /**
  * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
@@ -35,7 +36,7 @@ import org.bukkit.scheduler.BukkitTask;
  * <b>1.9 -> 1.18.2</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
- * @version 2.2.3
+ * @version 2.2.4
  * @author SkytAsul
  */
 public abstract class Laser {
@@ -293,6 +294,9 @@ public abstract class Laser {
 		
 		protected LivingEntity endEntity;
 		
+		private Location correctStart;
+		private Location correctEnd;
+		
 		/**
 		 * Creates a new Guardian Laser instance
 		* @param start Location where laser will starts
@@ -341,7 +345,7 @@ public abstract class Laser {
 			fakeGuardianDataWatcher = Packets.createFakeDataWatcher();
 			Packets.initGuardianWatcher(fakeGuardianDataWatcher, targetID);
 			if (Packets.version >= 17) {
-				guardian = Packets.createGuardian(start, guardianUUID, guardianID);
+				guardian = Packets.createGuardian(getCorrectStart(), guardianUUID, guardianID);
 			}
 			metadataPacketGuardian = Packets.createPacketMetadata(guardianID, fakeGuardianDataWatcher);
 			
@@ -351,7 +355,7 @@ public abstract class Laser {
 		
 		private void initSquid() throws ReflectiveOperationException {
 			if (Packets.version >= 17) {
-				squid = Packets.createSquid(end, squidUUID, squidID);
+				squid = Packets.createSquid(getCorrectEnd(), squidUUID, squidID);
 			}
 			metadataPacketSquid = Packets.createPacketMetadata(squidID, Packets.fakeSquidWatcher);
 			Packets.setDirtyWatcher(Packets.fakeSquidWatcher);
@@ -360,7 +364,7 @@ public abstract class Laser {
 		private Object getGuardianSpawnPacket() throws ReflectiveOperationException {
 			if (createGuardianPacket == null) {
 				if (Packets.version < 17) {
-					createGuardianPacket = Packets.createPacketEntitySpawnLiving(start, Packets.mappings.getGuardianID(), guardianUUID, guardianID);
+					createGuardianPacket = Packets.createPacketEntitySpawnLiving(getCorrectStart(), Packets.mappings.getGuardianID(), guardianUUID, guardianID);
 				}else {
 					createGuardianPacket = Packets.createPacketEntitySpawnLiving(guardian);
 				}
@@ -371,7 +375,7 @@ public abstract class Laser {
 		private Object getSquidSpawnPacket() throws ReflectiveOperationException {
 			if (createSquidPacket == null) {
 				if (Packets.version < 17) {
-					createSquidPacket = Packets.createPacketEntitySpawnLiving(end, Packets.mappings.getSquidID(), squidUUID, squidID);
+					createSquidPacket = Packets.createPacketEntitySpawnLiving(getCorrectEnd(), Packets.mappings.getSquidID(), squidUUID, squidID);
 				}else {
 					createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
 				}
@@ -420,6 +424,26 @@ public abstract class Laser {
 			return endEntity == null ? end : endEntity.getLocation();
 		}
 		
+		protected Location getCorrectStart() {
+			if (correctStart == null) {
+				correctStart = start.clone();
+				correctStart.subtract(0, 0.5, 0);
+			}
+			return correctStart;
+		}
+		
+		protected Location getCorrectEnd() {
+			if (correctEnd == null) {
+				correctEnd = end.clone();
+				correctEnd.subtract(0, 0.5, 0);
+				
+				Vector corrective = correctEnd.toVector().subtract(getCorrectStart().toVector()).normalize();
+				correctEnd.subtract(corrective);
+				
+			}
+			return correctEnd;
+		}
+		
 		@Override
 		protected boolean isCloseEnough(Player player) {
 			return player == endEntity || super.isCloseEnough(player);
@@ -450,21 +474,31 @@ public abstract class Laser {
 		@Override
 		public void moveStart(Location location) throws ReflectiveOperationException {
 			this.start = location;
+			correctStart = null;
+			
 			createGuardianPacket = null; // will force re-generation of spawn packet
-			moveFakeEntity(start, guardianID, guardian);
+			moveFakeEntity(getCorrectStart(), guardianID, guardian);
+			
+			if (squid != null) {
+				correctEnd = null;
+				createSquidPacket = null;
+				moveFakeEntity(getCorrectEnd(), squidID, squid);
+			}
 		}
 		
 		@Override
 		public void moveEnd(Location location) throws ReflectiveOperationException {
 			this.end = location;
 			createSquidPacket = null; // will force re-generation of spawn packet
+			correctEnd = null;
+			
 			if (squid == null) {
 				initSquid();
 				for (Player p : show) {
 					Packets.sendPackets(p, getSquidSpawnPacket(), metadataPacketSquid);
 				}
 			}else {
-				moveFakeEntity(end, squidID, squid);
+				moveFakeEntity(getCorrectEnd(), squidID, squid);
 			}
 			if (targetUUID != squidUUID) {
 				endEntity = null;
