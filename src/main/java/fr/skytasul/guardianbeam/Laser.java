@@ -36,7 +36,7 @@ import org.bukkit.util.Vector;
  * <b>1.9 -> 1.18.2</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
- * @version 2.2.4
+ * @version 2.2.5
  * @author SkytAsul
  */
 public abstract class Laser {
