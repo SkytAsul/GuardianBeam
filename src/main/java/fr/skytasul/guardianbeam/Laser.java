@@ -1011,7 +1011,7 @@ public abstract class Laser {
 		V1_13(13, "ac", "bF", "bG", "b", "c", 70, 28),
 		V1_14(14, "W", "b", "bD", "c", "d", 73, 30),
 		V1_15(15, "T", "b", "bA", "c", "d", 74, 31),
-		V1_16(16, null, "b", "d", "c", "d", -1, 31, "u", null, null){
+		V1_16(16, null, "b", "d", "c", "d", -1, 31){
 			@Override
 			public int getSquidID() {
 				return Packets.versionMinor < 2 ? 74 : 81;
