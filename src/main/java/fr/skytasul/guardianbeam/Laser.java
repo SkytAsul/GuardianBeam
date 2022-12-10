@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -31,11 +30,12 @@ import org.bukkit.util.Vector;
 
 /**
  * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
- * Inspired by the API <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
- * <b>1.9 -> 1.19</b>
+ * Inspired by the API
+ * <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
+ * <b>1.9 -> 1.19.3</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
- * @version 2.3.0
+ * @version 2.3.1
  * @author SkytAsul
  */
 public abstract class Laser {
@@ -677,6 +677,7 @@ public abstract class Laser {
 		private static Method watcherSet;
 		private static Method watcherRegister;
 		private static Method watcherDirty;
+		private static Method watcherPack;
 		
 		private static Constructor<?> blockPositionConstructor;
 		
@@ -766,10 +767,15 @@ public abstract class Laser {
 					watcherRegister = getMethod(dataWatcherClass, "register");
 				}
 				if (version >= 15) watcherDirty = getMethod(dataWatcherClass, "markDirty");
+				if (version > 19 || (version == 19 && versionMinor >= 3))
+					watcherPack = dataWatcherClass.getDeclaredMethod("b");
 				packetSpawnNormal = getNMSClass("network.protocol.game", "PacketPlayOutSpawnEntity").getDeclaredConstructor(version < 17 ? new Class<?>[0] : new Class<?>[] { getNMSClass("world.entity", "Entity") });
 				packetSpawnLiving = version >= 19 ? packetSpawnNormal : getNMSClass("network.protocol.game", "PacketPlayOutSpawnEntityLiving").getDeclaredConstructor(version < 17 ? new Class<?>[0] : new Class<?>[] { getNMSClass("world.entity", "EntityLiving") });
 				packetRemove = getNMSClass("network.protocol.game", "PacketPlayOutEntityDestroy").getDeclaredConstructor(version == 17 && versionMinor == 0 ? int.class : int[].class);
-				packetMetadata = getNMSClass("network.protocol.game", "PacketPlayOutEntityMetadata").getDeclaredConstructor(int.class, dataWatcherClass, boolean.class);
+				packetMetadata = getNMSClass("network.protocol.game", "PacketPlayOutEntityMetadata")
+						.getDeclaredConstructor(version < 19 || (version == 19 && versionMinor < 3)
+								? new Class<?>[] {int.class, dataWatcherClass, boolean.class}
+								: new Class<?>[] {int.class, List.class});
 				packetTeleport = getNMSClass("network.protocol.game", "PacketPlayOutEntityTeleport").getDeclaredConstructor(version < 17 ? new Class<?>[0] : new Class<?>[] { entityClass });
 				packetTeam = getNMSClass("network.protocol.game", "PacketPlayOutScoreboardTeam");
 
@@ -963,7 +969,11 @@ public abstract class Laser {
 		}
 
 		private static Object createPacketMetadata(int entityId, Object watcher) throws ReflectiveOperationException {
-			return packetMetadata.newInstance(entityId, watcher, false);
+			if (version < 19 || (version == 19 && versionMinor < 3)) {
+				return packetMetadata.newInstance(entityId, watcher, false);
+			} else {
+				return packetMetadata.newInstance(entityId, watcherPack.invoke(watcher));
+			}
 		}
 
 		private static void tryWatcherSet(Object watcher, Object watcherObject, Object watcherData) throws ReflectiveOperationException {
@@ -1025,7 +1035,22 @@ public abstract class Laser {
 					return Packets.versionMinor < 2 ? "aa" : "Z";
 				}
 			},
-			V1_19(19, "Z", "b", "e", "c", "d", 89, 38, "N", "aM", "w", "a", "g"),
+			V1_19(19, "Z", "b", "e", "c", "d", 89, 38, null, null, "w", "a", "g") {
+				@Override
+				public int getGuardianID() {
+					return versionMinor < 3 ? 38 : 39;
+				}
+
+				@Override
+				public String getSquidTypeName() {
+					return versionMinor < 3 ? "aM" : "aN";
+				}
+
+				@Override
+				public String getGuardianTypeName() {
+					return versionMinor < 3 ? "N" : "O";
+				}
+			},
 			;
 			
 			private final int major;

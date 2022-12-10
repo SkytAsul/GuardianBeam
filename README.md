@@ -1,4 +1,6 @@
 # GuardianBeam
+![Maven Central](https://img.shields.io/maven-central/v/io.github.skytasul/guardianbeam)
+
 An util to create easily Guardians and Ender Crystal Lasers via Packets and Reflection. No ProtocolLib, no dependency, compatible from Minecraft 1.9 to Minecraft 1.19!
 
 Inspired by the plugin [GuardianBeamAPI by Jaxon A Brown](https://www.spigotmc.org/resources/18329), which uses ProtocolLib.
@@ -18,7 +20,7 @@ Add this requirement to your maven `pom.xml` file:
 <dependency>
   <groupId>io.github.skytasul</groupId>
   <artifactId>guardianbeam</artifactId>
-  <version>2.3.0</version>
+  <version>2.3.1</version>
   <scope>compile</scope>
 </dependency>
 ```
