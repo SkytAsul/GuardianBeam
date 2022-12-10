@@ -437,6 +437,10 @@ public abstract class Laser {
 				correctEnd.subtract(0, 0.5, 0);
 				
 				Vector corrective = correctEnd.toVector().subtract(getCorrectStart().toVector()).normalize();
+				if (Double.isNaN(corrective.getX())) corrective.setX(0);
+				if (Double.isNaN(corrective.getY())) corrective.setY(0);
+				if (Double.isNaN(corrective.getZ())) corrective.setZ(0);
+				// coordinates can be NaN when start and end are stricly equals
 				correctEnd.subtract(corrective);
 				
 			}
