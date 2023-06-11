@@ -32,10 +32,10 @@ import org.bukkit.util.Vector;
  * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
  * Inspired by the API
  * <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
- * <b>1.9 -> 1.19.4</b>
+ * <b>1.9 -> 1.20</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
- * @version 2.3.2
+ * @version 2.3.3
  * @author SkytAsul
  */
 public abstract class Laser {
@@ -796,7 +796,8 @@ public abstract class Laser {
 				tryWatcherSet(fakeSquidWatcher, watcherObject1, (byte) 32);
 				
 				getHandle = Class.forName(cpack + "entity.CraftPlayer").getDeclaredMethod("getHandle");
-				playerConnection = getNMSClass("server.level", "EntityPlayer").getDeclaredField(version < 17 ? "playerConnection" : "b");
+				playerConnection = getNMSClass("server.level", "EntityPlayer")
+						.getDeclaredField(version < 17 ? "playerConnection" : (version < 20 ? "b" : "c"));
 				sendPacket = getNMSClass("server.network", "PlayerConnection").getMethod(version < 18 ? "sendPacket" : "a", getNMSClass("network.protocol", "Packet"));
 				
 				if (version >= 17) {
@@ -1068,6 +1069,7 @@ public abstract class Laser {
                         return "V";
 				}
 			},
+			V1_20(20, "an", "b", "e", "c", "d", 89, 38, "V", "aT", "B", "a", "g"),
 			;
 			
 			private final int major;
