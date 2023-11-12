@@ -54,8 +54,8 @@ public abstract class Laser {
 	protected Laser(Location start, Location end, int duration, int distance) {
 		if (!Packets.enabled) throw new IllegalStateException("The Laser Beam API is disabled. An error has occured during initialization.");
 		if (start.getWorld() != end.getWorld()) throw new IllegalArgumentException("Locations do not belong to the same worlds.");
-		this.start = start;
-		this.end = end;
+		this.start = start.clone();
+		this.end = end.clone();
 		this.duration = duration;
 		distanceSquared = distance < 0 ? -1 : distance * distance;
 	}
@@ -179,7 +179,7 @@ public abstract class Laser {
 	 * @return where exactly is the start position of the laser located
 	 */
 	public Location getStart() {
-		return start;
+		return start.clone();
 	}
 
 	/**
@@ -187,7 +187,7 @@ public abstract class Laser {
 	 * @return where exactly is the end position of the laser located
 	 */
 	public Location getEnd() {
-		return end;
+		return end.clone();
 	}
 
 	/**
@@ -470,7 +470,7 @@ public abstract class Laser {
 
 		@Override
 		public void moveStart(Location location) throws ReflectiveOperationException {
-			this.start = location;
+			this.start = location.clone();
 			correctStart = null;
 
 			createGuardianPacket = null; // will force re-generation of spawn packet
@@ -485,7 +485,7 @@ public abstract class Laser {
 
 		@Override
 		public void moveEnd(Location location) throws ReflectiveOperationException {
-			this.end = location;
+			this.end = location.clone();
 			createSquidPacket = null; // will force re-generation of spawn packet
 			correctEnd = null;
 
@@ -580,14 +580,17 @@ public abstract class Laser {
 
 		@Override
 		public void moveStart(Location location) throws ReflectiveOperationException {
-			this.start = location;
+			this.start = location.clone();
 			createCrystalPacket = null; // will force re-generation of spawn packet
 			moveFakeEntity(start, crystalID, crystal);
 		}
 
 		@Override
 		public void moveEnd(Location location) throws ReflectiveOperationException {
-			this.end = location;
+			if (end.equals(location))
+				return;
+
+			this.end = location.clone();
 			if (main != null) {
 				Packets.setCrystalWatcher(fakeCrystalDataWatcher, location);
 				metadataPacketCrystal = Packets.createPacketMetadata(crystalID, fakeCrystalDataWatcher);
