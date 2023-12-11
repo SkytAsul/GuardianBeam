@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -197,7 +196,7 @@ public abstract class Laser {
 	 * @param callback {@link Runnable} to execute at the end of the move (nullable)
 	 */
 	public void moveStart(Location location, int ticks, Runnable callback) {
-		startMove = moveInternal(location, ticks, startMove, this::getStart, this::moveStart, callback);
+		startMove = moveInternal(location, ticks, startMove, getStart(), this::moveStart, callback);
 	}
 
 	/**
@@ -207,23 +206,29 @@ public abstract class Laser {
 	 * @param callback {@link Runnable} to execute at the end of the move (nullable)
 	 */
 	public void moveEnd(Location location, int ticks, Runnable callback) {
-		endMove = moveInternal(location, ticks, endMove, this::getEnd, this::moveEnd, callback);
+		endMove = moveInternal(location, ticks, endMove, getEnd(), this::moveEnd, callback);
 	}
 
-	private BukkitTask moveInternal(Location location, int ticks, BukkitTask oldTask, Supplier<Location> locationSupplier, ReflectiveConsumer<Location> moveConsumer, Runnable callback) {
-		if (ticks <= 0) throw new IllegalArgumentException("Ticks must be a positive value");
-		if (plugin == null) throw new IllegalStateException("The laser must have been started a least once");
-		if (oldTask != null && !oldTask.isCancelled()) oldTask.cancel();
+	private BukkitTask moveInternal(Location location, int ticks, BukkitTask oldTask, Location from,
+			ReflectiveConsumer<Location> moveConsumer, Runnable callback) {
+		if (ticks <= 0)
+			throw new IllegalArgumentException("Ticks must be a positive value");
+		if (plugin == null)
+			throw new IllegalStateException("The laser must have been started a least once");
+		if (oldTask != null && !oldTask.isCancelled())
+			oldTask.cancel();
 		return new BukkitRunnable() {
-			double xPerTick = (location.getX() - locationSupplier.get().getX()) / ticks;
-			double yPerTick = (location.getY() - locationSupplier.get().getY()) / ticks;
-			double zPerTick = (location.getZ() - locationSupplier.get().getZ()) / ticks;
+			double xPerTick = (location.getX() - from.getX()) / ticks;
+			double yPerTick = (location.getY() - from.getY()) / ticks;
+			double zPerTick = (location.getZ() - from.getZ()) / ticks;
+			Location loc = from.clone();
 			int elapsed = 0;
 
 			@Override
 			public void run() {
 				try {
-					moveConsumer.accept(locationSupplier.get().add(xPerTick, yPerTick, zPerTick));
+					loc.add(xPerTick, yPerTick, zPerTick);
+					moveConsumer.accept(loc);
 				}catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 					cancel();
