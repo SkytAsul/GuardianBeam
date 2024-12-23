@@ -344,7 +344,7 @@ net.minecraft.world.entity.boss.enderdragon.EndCrystal -> net.minecraft.world.en
     DATA_SHOW_BOTTOM -> d
 net.minecraft.world.scores.PlayerTeam -> net.minecraft.world.scores.ScoreboardTeam:
     setCollisionRule(net.minecraft.world.scores.Team$CollisionRule) -> setCollisionRule
-    getPlayers() -> g
+    getPlayers() -> getPlayerNameSet
 net.minecraft.world.entity.LivingEntity -> net.minecraft.world.entity.EntityLiving:
 net.minecraft.network.protocol.game.ClientboundRemoveEntityPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy:
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
@@ -367,7 +367,7 @@ net.minecraft.server.level.ServerPlayer -> net.minecraft.server.level.EntityPlay
 net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.ScoreboardTeamBase$EnumTeamPush:
     NEVER -> b
 net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.server.network.PlayerConnection:
-    send(net.minecraft.network.protocol.Packet) -> a
+    send(net.minecraft.network.protocol.Packet) -> sendPacket
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> Z
     blockPosition -> aw
@@ -506,7 +506,7 @@ net.minecraft.world.entity.boss.enderdragon.EndCrystal -> net.minecraft.world.en
     DATA_SHOW_BOTTOM -> d
 net.minecraft.world.scores.PlayerTeam -> net.minecraft.world.scores.ScoreboardTeam:
     setCollisionRule(net.minecraft.world.scores.Team$CollisionRule) -> setCollisionRule
-    getPlayers() -> g
+    getPlayers() -> getPlayerNameSet
 net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy:
 net.minecraft.world.entity.LivingEntity -> net.minecraft.world.entity.EntityLiving:
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
@@ -529,7 +529,7 @@ net.minecraft.server.level.ServerPlayer -> net.minecraft.server.level.EntityPlay
 net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.ScoreboardTeamBase$EnumTeamPush:
     NEVER -> b
 net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.server.network.PlayerConnection:
-    send(net.minecraft.network.protocol.Packet) -> a
+    send(net.minecraft.network.protocol.Packet) -> sendPacket
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> Z
     blockPosition -> aw
