@@ -1,7 +1,7 @@
 # GuardianBeam
-![Maven Central](https://img.shields.io/maven-central/v/io.github.skytasul/guardianbeam)
+![Maven Central](https://img.shields.io/maven-central/v/fr.skytasul/guardianbeam)
 
-An util to create easily Guardians and Ender Crystal Lasers via Packets and Reflection. No ProtocolLib, no dependency, compatible from Minecraft 1.9 to Minecraft 1.20!
+An util to create easily Guardians and Ender Crystal Lasers via Packets and Reflection. No ProtocolLib, no dependency, compatible from Minecraft 1.9 to Minecraft 1.21!
 
 Inspired by the plugin [GuardianBeamAPI by Jaxon A Brown](https://www.spigotmc.org/resources/18329), which uses ProtocolLib.
 
@@ -9,24 +9,24 @@ There is a [page on SpigotMC](https://www.spigotmc.org/threads/tutorial-laser-gu
 
 ![Static laser gif](Beam.gif)
 
-## How to install?
-### 1st method: copying class
-First, copy the [Laser.java class](src/main/java/fr/skytasul/guardianbeam/Laser.java) to your project.
-
-### 2nd method: using maven
+## How to install using maven
 Add this requirement to your maven `pom.xml` file:
 
 ```xml
 <dependency>
-  <groupId>io.github.skytasul</groupId>
+  <groupId>fr.skytasul</groupId>
   <artifactId>guardianbeam</artifactId>
-  <version>2.3.3</version>
+  <version>{VERSION}</version>
   <scope>compile</scope>
 </dependency>
 ```
-Additionnally, you can use the maven shade plugin to relocate the class location.
+You need to set up the maven shade plugin to relocate the classes.
 
-## How to use?
+> [!IMPORTANT]
+> Replace {VERSION} by the version of the util you want to use (see at the top).  
+> Versions 1.9 to 1.16.5 are only supported up to the version 2.3.6.
+
+## How to use
 1. Create Location objects of where do you want your laser starts and ends.
 2. Create a Laser instance: `new GuardianLaser(locationStart, locationEnd, duration, visibleDistance)` - duration is the time (in seconds) when laser will be visible (if you set it to -1, the laser will exist infinitely), and visibleDistance is the amount of blocks where your laser will be visible. You can also use `new CrystalLaser(...)` to create an Ender Crystal laser.
 3. After this, call the method `laser.start(plugin);` (where "plugin" parameter is the instance of your JavaPlugin class).
