@@ -33,10 +33,10 @@ import java.util.logging.Logger;
  * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
  * Inspired by the API
  * <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
- * <b>1.17 -> 1.21.4</b>
+ * <b>1.17 -> 1.21.5</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
- * @version 2.4.0
+ * @version 2.4.1
  * @author SkytAsul
  */
 public abstract class Laser {
@@ -831,8 +831,8 @@ public abstract class Laser {
 					packetListenerClass.getMethodInstance("send", getNMSClass(reflection, "network.protocol", "Packet"));
 
 			getData = entityClass.getMethodInstance("getEntityData");
-			setLocation = entityClass.getMethodInstance("absMoveTo", double.class, double.class,
-					double.class, float.class, float.class);
+			setLocation = entityClass.getMethodInstance(version.isAfter(1, 21, 5) ? "absSnapTo" : "absMoveTo", double.class,
+					double.class, double.class, float.class, float.class);
 			entityBlockPosition = entityClass.getFieldInstance("blockPosition");
 			setUUID = entityClass.getMethodInstance("setUUID", UUID.class);
 			setID = entityClass.getMethodInstance("setId", int.class);
