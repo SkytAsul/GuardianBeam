@@ -36,7 +36,7 @@ import java.util.logging.Logger;
  * <b>1.17 -> 1.21.6</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
- * @version 2.4.2
+ * @version 2.4.3
  * @author SkytAsul
  */
 public abstract class Laser {
