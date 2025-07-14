@@ -33,10 +33,10 @@ import java.util.logging.Logger;
  * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
  * Inspired by the API
  * <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
- * <b>1.17 -> 1.21.6</b>
+ * <b>1.17 -> 1.21.7</b>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
- * @version 2.4.3
+ * @version 2.4.4
  * @author SkytAsul
  */
 public abstract class Laser {
