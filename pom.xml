@@ -51,7 +51,8 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.17-R0.1-SNAPSHOT</version>
+			<!-- No SNAPSHOT for maven central publishing -->
+			<version>1.17-R0.1-20210706.122143-68</version>
 			<scope>provided</scope>
 		</dependency>
 
