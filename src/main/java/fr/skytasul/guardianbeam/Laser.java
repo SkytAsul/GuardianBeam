@@ -30,13 +30,9 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
- * A whole class to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
- * Inspired by the API
- * <a href="https://www.spigotmc.org/resources/guardianbeamapi.18329">GuardianBeamAPI</a><br>
- * <b>1.17 -> 1.21.7</b>
+ * An util to create Guardian Lasers and Ender Crystal Beams using packets and reflection.<br>
  *
  * @see <a href="https://github.com/SkytAsul/GuardianBeam">GitHub repository</a>
- * @version 2.4.4
  * @author SkytAsul
  */
 public abstract class Laser {
@@ -728,7 +724,6 @@ public abstract class Laser {
 					var mappingsFile =
 							new String(Laser.class.getResourceAsStream("mappings/spigot.txt").readAllBytes());
 					var mappingsReader = new MappingFileReader(new ProguardMapping(false), mappingsFile.lines().toList());
-					mappingsReader.readAvailableVersions();
 					var foundVersion = mappingsReader.keepBestMatchedVersion(serverVersion);
 
 					if (foundVersion.isEmpty())
