@@ -762,7 +762,8 @@ public abstract class Laser {
 			var entityTypesClass = getNMSClass(reflection, "world.entity", "EntityType");
 			var entityClass = getNMSClass(reflection, "world.entity", "Entity");
 			var crystalClass = getNMSClass(reflection, "world.entity.boss.enderdragon", "EndCrystal");
-			var squidClass = getNMSClass(reflection, "world.entity.animal", "Squid");
+			var squidClass = getNMSClass(reflection,
+					version.isAfter(1, 21, 11) ? "world.entity.animal.squid" : "world.entity.animal", "Squid");
 			var guardianClass = getNMSClass(reflection, "world.entity.monster", "Guardian");
 			var blockPosClass = getNMSClass(reflection, "core", "BlockPos");
 			dataAccessorFlags = entityClass.getField("DATA_SHARED_FLAGS_ID").get(null);
