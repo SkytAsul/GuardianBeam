@@ -949,3 +949,87 @@ net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecr
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
+# reflection-remapper | 1.21.10
+net.minecraft.world.entity.animal.Squid -> net.minecraft.world.entity.animal.EntitySquid:
+net.minecraft.world.entity.boss.enderdragon.EndCrystal -> net.minecraft.world.entity.boss.enderdragon.EntityEnderCrystal:
+    DATA_BEAM_TARGET -> b
+    DATA_SHOW_BOTTOM -> c
+net.minecraft.world.scores.PlayerTeam -> net.minecraft.world.scores.ScoreboardTeam:
+    setCollisionRule(net.minecraft.world.scores.Team$CollisionRule) -> a
+    getPlayers() -> h
+net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy:
+net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
+    SQUID -> bw
+    GUARDIAN -> am
+net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
+    createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
+net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
+net.minecraft.server.network.ServerCommonPacketListenerImpl -> net.minecraft.server.network.ServerCommonPacketListenerImpl:
+    send(net.minecraft.network.protocol.Packet) -> b
+net.minecraft.network.protocol.game.ClientboundAddEntityPacket -> net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity:
+net.minecraft.world.entity.monster.Guardian -> net.minecraft.world.entity.monster.EntityGuardian:
+    DATA_ID_MOVING -> a
+    DATA_ID_ATTACK_TARGET -> d
+net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket -> net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket:
+    of(net.minecraft.world.entity.Entity) -> a
+net.minecraft.network.syncher.SynchedEntityData -> net.minecraft.network.syncher.DataWatcher:
+    set(net.minecraft.network.syncher.EntityDataAccessor,java.lang.Object,boolean) -> a
+    packDirty() -> b
+net.minecraft.world.scores.Scoreboard -> net.minecraft.world.scores.Scoreboard:
+net.minecraft.server.level.ServerPlayer -> net.minecraft.server.level.EntityPlayer:
+    connection -> g
+net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.ScoreboardTeamBase$EnumTeamPush:
+    NEVER -> b
+net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
+    DATA_SHARED_FLAGS_ID -> aA
+    blockPosition -> aW
+    getEntityData() -> aC
+    absSnapTo(double,double,double,float,float) -> a
+    setUUID(java.util.UUID) -> a_
+    setId(int) -> e
+net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
+net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
+net.minecraft.world.level.Level -> net.minecraft.world.level.World:
+# reflection-remapper | 1.21.11
+net.minecraft.world.entity.boss.enderdragon.EndCrystal -> net.minecraft.world.entity.boss.enderdragon.EntityEnderCrystal:
+    DATA_BEAM_TARGET -> b
+    DATA_SHOW_BOTTOM -> c
+net.minecraft.world.scores.PlayerTeam -> net.minecraft.world.scores.ScoreboardTeam:
+    setCollisionRule(net.minecraft.world.scores.Team$CollisionRule) -> a
+    getPlayers() -> h
+net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityDestroy:
+net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
+    SQUID -> bz
+    GUARDIAN -> an
+net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
+    createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
+net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
+net.minecraft.server.network.ServerCommonPacketListenerImpl -> net.minecraft.server.network.ServerCommonPacketListenerImpl:
+    send(net.minecraft.network.protocol.Packet) -> b
+net.minecraft.network.protocol.game.ClientboundAddEntityPacket -> net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity:
+net.minecraft.world.entity.monster.Guardian -> net.minecraft.world.entity.monster.EntityGuardian:
+    DATA_ID_MOVING -> a
+    DATA_ID_ATTACK_TARGET -> d
+net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket -> net.minecraft.network.protocol.game.ClientboundEntityPositionSyncPacket:
+    of(net.minecraft.world.entity.Entity) -> a
+net.minecraft.network.syncher.SynchedEntityData -> net.minecraft.network.syncher.DataWatcher:
+    set(net.minecraft.network.syncher.EntityDataAccessor,java.lang.Object,boolean) -> a
+    packDirty() -> b
+net.minecraft.world.scores.Scoreboard -> net.minecraft.world.scores.Scoreboard:
+net.minecraft.server.level.ServerPlayer -> net.minecraft.server.level.EntityPlayer:
+    connection -> g
+net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.ScoreboardTeamBase$EnumTeamPush:
+    NEVER -> b
+net.minecraft.world.entity.animal.squid.Squid -> net.minecraft.world.entity.animal.squid.EntitySquid:
+net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
+    DATA_SHARED_FLAGS_ID -> aA
+    blockPosition -> aW
+    getEntityData() -> aD
+    absSnapTo(double,double,double,float,float) -> a
+    setUUID(java.util.UUID) -> a
+    setId(int) -> e
+net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
+net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
+net.minecraft.world.level.Level -> net.minecraft.world.level.World:
