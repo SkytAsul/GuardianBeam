@@ -7,6 +7,7 @@ import fr.skytasul.reflection.TransparentReflectionAccessor;
 import fr.skytasul.reflection.Version;
 import fr.skytasul.reflection.mappings.files.MappingFileReader;
 import fr.skytasul.reflection.mappings.files.ProguardMapping;
+import io.papermc.paper.ServerBuildInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -706,9 +707,15 @@ public abstract class Laser {
 				logger.setParent(Bukkit.getServer().getLogger());
 				logger.setLevel(Level.ALL);
 
-				// e.g. Bukkit.getBukkitVersion() -> 1.17.1-R0.1-SNAPSHOT
-				var versionString = Bukkit.getBukkitVersion().split("-R")[0];
-				var serverVersion = Version.parse(versionString);
+				String minecraftVersion;
+				try {
+					minecraftVersion = ServerBuildInfo.buildInfo().minecraftVersionId();
+				} catch (NoClassDefFoundError ex) {
+					// e.g. Bukkit.getBukkitVersion() -> 1.17.1-R0.1-SNAPSHOT
+					minecraftVersion = Bukkit.getBukkitVersion().split("-R")[0];
+				}
+
+				var serverVersion = Version.parse(minecraftVersion);
 				logger.info("Found server version " + serverVersion);
 
 				cpack = Bukkit.getServer().getClass().getPackage().getName() + ".";
