@@ -447,6 +447,12 @@ public abstract class Laser {
 						metadataPacketSquid);
 			}
 
+			if (Packets.spawnPacketNeedsResync()) {
+				Packets.sendPackets(p, Packets.createPacketMoveEntity(guardian));
+				if (squid != null)
+					Packets.sendPackets(p, Packets.createPacketMoveEntity(squid));
+			}
+
 			if (!hasSeen) Packets.sendPackets(p, teamCreatePacket);
 		}
 
@@ -550,6 +556,9 @@ public abstract class Laser {
 		protected void sendStartPackets(Player p, boolean hasSeen) throws ReflectiveOperationException {
 			Packets.sendPackets(p, getCrystalSpawnPacket());
 			Packets.sendPackets(p, metadataPacketCrystal);
+
+			if (Packets.spawnPacketNeedsResync())
+				Packets.sendPackets(p, Packets.createPacketMoveEntity(crystal));
 		}
 
 		@Override
@@ -863,6 +872,10 @@ public abstract class Laser {
 				nmsWorld = Class.forName(cpack + "CraftWorld").getDeclaredMethod("getHandle")
 						.invoke(Bukkit.getWorlds().get(0));
 			}
+		}
+
+		static boolean spawnPacketNeedsResync() {
+			return version.isAfter(1, 21, 0);
 		}
 
 		public static void sendPackets(Player p, Object... packets) throws ReflectiveOperationException {
