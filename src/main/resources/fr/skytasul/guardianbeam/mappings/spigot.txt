@@ -31,7 +31,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> sendPacket
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> Z
-    blockPosition -> aw
     getEntityData() -> getDataWatcher
     absMoveTo(double,double,double,float,float) -> setLocation
     setUUID(java.util.UUID) -> a_
@@ -73,7 +72,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> sendPacket
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> Z
-    blockPosition -> aw
     getEntityData() -> getDataWatcher
     absMoveTo(double,double,double,float,float) -> setLocation
     setUUID(java.util.UUID) -> a_
@@ -115,7 +113,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> a
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> aa
-    blockPosition -> ax
     getEntityData() -> ai
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -157,7 +154,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> a
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> aa
-    blockPosition -> ax
     getEntityData() -> ai
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -199,7 +195,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> a
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> Z
-    blockPosition -> ax
     getEntityData() -> ai
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -239,7 +234,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> a
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> Z
-    blockPosition -> ax
     getEntityData() -> ai
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -279,7 +273,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> a
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> Z
-    blockPosition -> ax
     getEntityData() -> ai
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -319,7 +312,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> a
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> Z
-    blockPosition -> ax
     getEntityData() -> ai
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -359,7 +351,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> a
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> Z
-    blockPosition -> ax
     getEntityData() -> al
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -400,7 +391,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> a
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> an
-    blockPosition -> u
     getEntityData() -> aj
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -441,7 +431,6 @@ net.minecraft.server.network.ServerGamePacketListenerImpl -> net.minecraft.serve
     send(net.minecraft.network.protocol.Packet) -> a
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> an
-    blockPosition -> aD
     getEntityData() -> aj
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -482,7 +471,6 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> ao
-    blockPosition -> v
     getEntityData() -> al
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -523,7 +511,6 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> ao
-    blockPosition -> v
     getEntityData() -> an
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -564,7 +551,6 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> ap
-    blockPosition -> t
     getEntityData() -> ap
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
@@ -585,6 +571,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> aX
     GUARDIAN -> Y
+    END_CRYSTAL -> E
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -605,12 +592,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> ap
-    blockPosition -> t
     getEntityData() -> ar
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -626,6 +613,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> aX
     GUARDIAN -> Y
+    END_CRYSTAL -> E
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -646,12 +634,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> ap
-    blockPosition -> t
     getEntityData() -> ar
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -667,6 +655,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> br
     GUARDIAN -> aj
+    END_CRYSTAL -> S
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -688,12 +677,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> am
-    blockPosition -> u
     getEntityData() -> au
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -709,6 +698,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> bq
     GUARDIAN -> ai
+    END_CRYSTAL -> R
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -730,12 +720,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> am
-    blockPosition -> u
     getEntityData() -> au
     absMoveTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -751,6 +741,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> bs
     GUARDIAN -> aj
+    END_CRYSTAL -> S
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -772,12 +763,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> am
-    blockPosition -> aB
     getEntityData() -> ar
     absSnapTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -793,6 +784,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> bt
     GUARDIAN -> ak
+    END_CRYSTAL -> S
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -814,12 +806,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> az
-    blockPosition -> aV
     getEntityData() -> au
     absSnapTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -835,6 +827,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> bt
     GUARDIAN -> ak
+    END_CRYSTAL -> S
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -856,12 +849,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> az
-    blockPosition -> aV
     getEntityData() -> au
     absSnapTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -877,6 +870,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> bt
     GUARDIAN -> ak
+    END_CRYSTAL -> S
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -898,12 +892,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> az
-    blockPosition -> aV
     getEntityData() -> au
     absSnapTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -919,6 +913,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> bw
     GUARDIAN -> am
+    END_CRYSTAL -> U
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -940,12 +935,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> aA
-    blockPosition -> aW
     getEntityData() -> aC
     absSnapTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -961,6 +956,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> bw
     GUARDIAN -> am
+    END_CRYSTAL -> U
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -982,12 +978,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
     NEVER -> b
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> aA
-    blockPosition -> aW
     getEntityData() -> aC
     absSnapTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a_
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
@@ -1002,6 +998,7 @@ net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket -> net.minec
 net.minecraft.world.entity.EntityType -> net.minecraft.world.entity.EntityTypes:
     SQUID -> bz
     GUARDIAN -> an
+    END_CRYSTAL -> V
 net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket -> net.minecraft.network.protocol.game.PacketPlayOutScoreboardTeam:
     createAddOrModifyPacket(net.minecraft.world.scores.PlayerTeam,boolean) -> a
 net.minecraft.network.syncher.EntityDataAccessor -> net.minecraft.network.syncher.DataWatcherObject:
@@ -1024,12 +1021,12 @@ net.minecraft.world.scores.Team$CollisionRule -> net.minecraft.world.scores.Scor
 net.minecraft.world.entity.animal.squid.Squid -> net.minecraft.world.entity.animal.squid.EntitySquid:
 net.minecraft.world.entity.Entity -> net.minecraft.world.entity.Entity:
     DATA_SHARED_FLAGS_ID -> aA
-    blockPosition -> aW
     getEntityData() -> aD
     absSnapTo(double,double,double,float,float) -> a
     setUUID(java.util.UUID) -> a
     setId(int) -> e
 net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket -> net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata:
+net.minecraft.world.phys.Vec3 -> net.minecraft.world.phys.Vec3D:
 net.minecraft.core.BlockPos -> net.minecraft.core.BlockPosition:
 net.minecraft.network.protocol.Packet -> net.minecraft.network.protocol.Packet:
 net.minecraft.world.level.Level -> net.minecraft.world.level.World:
