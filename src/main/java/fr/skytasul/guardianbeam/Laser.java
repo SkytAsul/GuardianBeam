@@ -353,13 +353,15 @@ public abstract class Laser {
 
 		private Object getGuardianSpawnPacket() throws ReflectiveOperationException {
 			if (createGuardianPacket == null)
-				createGuardianPacket = Packets.createPacketEntitySpawnLiving(guardian);
+				createGuardianPacket = Packets.createPacketEntitySpawnLiving(guardian, Packets.guardianType,
+						getCorrectStart(), guardianUUID, guardianID);
 			return createGuardianPacket;
 		}
 
 		private Object getSquidSpawnPacket() throws ReflectiveOperationException {
 			if (createSquidPacket == null)
-				createSquidPacket = Packets.createPacketEntitySpawnLiving(squid);
+				createSquidPacket = Packets.createPacketEntitySpawnLiving(squid, Packets.squidType,
+						getCorrectEnd(), squidUUID, squidID);
 			return createSquidPacket;
 		}
 
@@ -509,6 +511,7 @@ public abstract class Laser {
 		private Object[] destroyPackets;
 
 		private final Object crystal;
+		private final UUID crystalUUID = UUID.randomUUID();
 		private final int crystalID = Packets.generateEID();
 		private final Object crystalWatcher;
 
@@ -527,7 +530,7 @@ public abstract class Laser {
 			super(start, new Location(end.getWorld(), end.getBlockX(), end.getBlockY(), end.getBlockZ()), duration,
 					distance);
 
-			crystal = Packets.createCrystal(start, UUID.randomUUID(), crystalID);
+			crystal = Packets.createCrystal(start, crystalUUID, crystalID);
 			crystalWatcher = Packets.getEntityData(crystal);
 			Packets.setCrystalTarget(crystalWatcher, end);
 			metadataPacketCrystal = Packets.createPacketMetadata(crystalID, crystalWatcher);
@@ -537,7 +540,8 @@ public abstract class Laser {
 
 		private Object getCrystalSpawnPacket() throws ReflectiveOperationException {
 			if (createCrystalPacket == null)
-				createCrystalPacket = Packets.createPacketEntitySpawnNormal(crystal);
+				createCrystalPacket = Packets.createPacketEntitySpawnNormal(crystal, Packets.crystalType, start,
+						crystalUUID, crystalID);
 			return createCrystalPacket;
 		}
 
@@ -638,6 +642,7 @@ public abstract class Laser {
 
 		private static Object squidType;
 		private static Object guardianType;
+		private static Object crystalType;
 
 		private static Constructor<?> crystalConstructor;
 		private static Constructor<?> squidConstructor;
@@ -656,6 +661,7 @@ public abstract class Laser {
 		private static Method watcherPack;
 
 		private static Constructor<?> blockPositionConstructor;
+		private static Constructor<?> vec3Constructor;
 
 		private static Constructor<?> packetSpawnLiving;
 		private static Constructor<?> packetSpawnNormal;
@@ -677,7 +683,6 @@ public abstract class Laser {
 		private static Method sendPacket;
 
 		private static Method getData;
-		private static Field entityBlockPosition;
 		private static Method setLocation;
 		private static Method setUUID;
 		private static Method setID;
@@ -787,6 +792,8 @@ public abstract class Laser {
 
 			squidType = getEntityType(reflection, "SQUID");
 			guardianType = getEntityType(reflection, "GUARDIAN");
+			if (version.isAfter(1, 21, 0))
+				crystalType = getEntityType(reflection, "END_CRYSTAL");
 
 			dataWatcherClass = getNMSClass(reflection, "network.syncher", "SynchedEntityData");
 			dataAccessorClass = getNMSClass(reflection, "network.syncher", "EntityDataAccessor");
@@ -799,10 +806,18 @@ public abstract class Laser {
 					watcherDirty = dataWatcherClass.getClassInstance().getDeclaredMethod("markDirty",
 							dataAccessorClass.getClassInstance());
 			}
-			packetSpawnNormal = getNMSClass(reflection, "network.protocol.game", "ClientboundAddEntityPacket")
-					.getConstructorInstance(
-							version.isBefore(1, 21, 0) ? new Type[] {entityClass}
-									: new Type[] {entityClass, int.class, blockPosClass});
+			if (version.isBefore(1, 21, 0)) {
+				packetSpawnNormal = getNMSClass(reflection, "network.protocol.game", "ClientboundAddEntityPacket")
+						.getConstructorInstance(entityClass);
+			} else {
+				// Entity-based constructors round the coordinates to integer block positions in 1.21 and above,
+				// therefore we use the constructor taking raw data with double coordinates
+				var vec3Class = getNMSClass(reflection, "world.phys", "Vec3");
+				vec3Constructor = vec3Class.getConstructorInstance(double.class, double.class, double.class);
+				packetSpawnNormal = getNMSClass(reflection, "network.protocol.game", "ClientboundAddEntityPacket")
+						.getConstructorInstance(int.class, UUID.class, double.class, double.class, double.class,
+								float.class, float.class, entityTypeClass, int.class, vec3Class, double.class);
+			}
 			if (version.isBefore(1, 19, 0))
 				packetSpawnLiving = getNMSClass(reflection, "network.protocol.game", "ClientboundAddMobPacket")
 						.getConstructorInstance(getNMSClass(reflection, "world.entity", "LivingEntity"));
@@ -823,8 +838,7 @@ public abstract class Laser {
 						.getMethodInstance("of", entityClass);
 			}
 
-			blockPositionConstructor =
-					getNMSClass(reflection, "core", "BlockPos").getConstructorInstance(int.class, int.class, int.class);
+			blockPositionConstructor = blockPosClass.getConstructorInstance(int.class, int.class, int.class);
 
 			var levelClass = getNMSClass(reflection, "world.level", "Level");
 
@@ -842,7 +856,6 @@ public abstract class Laser {
 			getData = entityClass.getMethodInstance("getEntityData");
 			setLocation = entityClass.getMethodInstance(version.isAfter(1, 21, 5) ? "absSnapTo" : "absMoveTo", double.class,
 					double.class, double.class, float.class, float.class);
-			entityBlockPosition = entityClass.getFieldInstance("blockPosition");
 			setUUID = entityClass.getMethodInstance("setUUID", UUID.class);
 			setID = entityClass.getMethodInstance("setId", int.class);
 
@@ -901,17 +914,19 @@ public abstract class Laser {
 			return getData.invoke(entity);
 		}
 
-		public static Object createPacketEntitySpawnLiving(Object entity) throws ReflectiveOperationException {
+		public static Object createPacketEntitySpawnLiving(Object entity, Object entityType, Location location,
+				UUID uuid, int entityId) throws ReflectiveOperationException {
 			if (packetSpawnLiving == null) // after 1.19
-				return createPacketEntitySpawnNormal(entity);
+				return createPacketEntitySpawnNormal(entity, entityType, location, uuid, entityId);
 			return packetSpawnLiving.newInstance(entity);
 		}
 
-		public static Object createPacketEntitySpawnNormal(Object entity) throws ReflectiveOperationException {
-			if (version.isAfter(1, 21, 0)) {
-				Object entityPos = entityBlockPosition.get(entity);
-				return packetSpawnNormal.newInstance(entity, 0, entityPos);
-			}
+		public static Object createPacketEntitySpawnNormal(Object entity, Object entityType, Location location,
+				UUID uuid, int entityId) throws ReflectiveOperationException {
+			if (version.isAfter(1, 21, 0))
+				return packetSpawnNormal.newInstance(entityId, uuid, location.getX(), location.getY(), location.getZ(),
+						location.getPitch(), location.getYaw(), entityType, 0,
+						vec3Constructor.newInstance(0d, 0d, 0d), 0d);
 			return packetSpawnNormal.newInstance(entity);
 		}
 
