@@ -764,9 +764,15 @@ public abstract class Laser {
 			}
 		}
 
+		protected static Object getEntityType(@NotNull ReflectionAccessor reflection, @NotNull String name) throws ReflectiveOperationException {
+			var typesClass = getNMSClass(reflection, "world.entity",
+					version.isAfter(26, 2, 0) ? "EntityTypes" : "EntityType");
+			return typesClass.getField(name).get(null);
+		}
+
 		protected static void loadReflection(@NotNull ReflectionAccessor reflection, @NotNull Version version)
 				throws ReflectiveOperationException {
-			var entityTypesClass = getNMSClass(reflection, "world.entity", "EntityType");
+			var entityTypeClass = getNMSClass(reflection, "world.entity", "EntityType");
 			var entityClass = getNMSClass(reflection, "world.entity", "Entity");
 			var crystalClass = getNMSClass(reflection, "world.entity.boss.enderdragon", "EndCrystal");
 			var squidClass = getNMSClass(reflection,
@@ -779,8 +785,8 @@ public abstract class Laser {
 			dataAccessorCrystalTarget = crystalClass.getField("DATA_BEAM_TARGET").get(null);
 			dataAccessorCrystalBottom = crystalClass.getField("DATA_SHOW_BOTTOM").get(null);
 
-			squidType = entityTypesClass.getField("SQUID").get(null);
-			guardianType = entityTypesClass.getField("GUARDIAN").get(null);
+			squidType = getEntityType(reflection, "SQUID");
+			guardianType = getEntityType(reflection, "GUARDIAN");
 
 			dataWatcherClass = getNMSClass(reflection, "network.syncher", "SynchedEntityData");
 			dataAccessorClass = getNMSClass(reflection, "network.syncher", "EntityDataAccessor");
@@ -822,8 +828,8 @@ public abstract class Laser {
 
 			var levelClass = getNMSClass(reflection, "world.level", "Level");
 
-			squidConstructor = squidClass.getConstructorInstance(entityTypesClass, levelClass);
-			guardianConstructor = guardianClass.getConstructorInstance(entityTypesClass, levelClass);
+			squidConstructor = squidClass.getConstructorInstance(entityTypeClass, levelClass);
+			guardianConstructor = guardianClass.getConstructorInstance(entityTypeClass, levelClass);
 			crystalConstructor = crystalClass.getConstructorInstance(levelClass, double.class, double.class, double.class);
 
 			playerConnection = getNMSClass(reflection, "server.level", "ServerPlayer").getFieldInstance("connection");
